@@ -7,6 +7,15 @@ Vape pork belly street art master cleanse. Cardigan coloring
 brooklyn franzen knausgaard PBR&B 90's pork belly tbh selvage jean
 shorts artisan actually sartorial
 
+Development
+________________________________________________________________________
+
+docker-compose up --build -d
+docker exec -it build-script-build-1 sh 
+./build.sh --all
+
+docker-compose down --remove-orphans 
+
 
 Disclaimer
 ________________________________________________________________________
@@ -17,7 +26,7 @@ Still under heavy development and isnt even in alpha stage right now
 License
 ________________________________________________________________________
 
-Copyright by ImLinus <mail@imlinus.com>
+Copyright by Linus <mail@imlinus.com>
 
 Anyone is free to use this software for any purpose
 
