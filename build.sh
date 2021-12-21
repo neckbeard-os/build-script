@@ -6,8 +6,8 @@
 
 # Distro
 DISTRO_NAME="Neckbeard OS"
-DISTRO_PATHNAME="neckbeard-os"
-DISTRO_VERSION="0.1.0"
+# DISTRO_PATHNAME="neckbeard-os"
+# DISTRO_VERSION="0.1.0"
 
 # Package versions
 CROSS_MAKE_VERSION="0.9.9"
@@ -45,7 +45,7 @@ RESET="$(tput sgr0)"
 # Utilities
 # ---------
 has_root () {
-  if [ $(id -u) != 0 ]; then
+  if [ "$(id -u)" != 0 ]; then
     echo "${RED}Sorry, must be root to run this script${RESET}"
     exit 1
   fi
@@ -60,9 +60,17 @@ has_decent_cpu () {
 }
 
 log () {
-  echo "=>$GREEN $1 $RESET"
+  echo "${BOLD}${GREEN}➜${RESET} ${1}"
 }
 
+success () {
+  echo "${BOLD}${GREEN}✔${RESET} ${1}"
+}
+
+error () {
+  echo "${BOLD}${RED}¯\_(ツ)_/¯${RESET} ${1}"
+  exit 1
+}
 
 # -----------------
 # Prepare workspace
@@ -153,6 +161,21 @@ download_dependencies () {
 }
 
 
+# ---------------
+# Setup toolchain
+# ---------------
+build_toolchain () {
+  cd "$DOWNLOADS_DIR"/musl-cross-make-"$CROSS_MAKE_VERSION" || exit
+
+  log "Building toolchain"
+  
+  mv config.mak.dist config.mak
+  echo 'TARGET = x86_64-linux-musl' >> config.mak
+  
+  make -j"$THREADS"
+}
+
+
 # -------
 # Screens
 # -------
@@ -162,6 +185,7 @@ ${BOLD}Available commands${RESET}
   --all
   --prepare-workspace
   --download-dependencies
+  --setup-toolchain
 EOF
 }
 
@@ -185,8 +209,9 @@ EOF
 build_all () {
   prepare_workspace
   download_dependencies
+  setup_toolchain
 
-  echo "${GREEN}${BOLD}✔${RESET} Success"
+  success "All done"
 }
 
 
@@ -202,6 +227,7 @@ if [ -n "$1" ]; then
     "--all") build_all ;;
     "--prepare-workspace") prepare_workspace ;;
     "--download-dependencies") download_dependencies ;;
+    "--setup-toolchain") setup_toolchain ;;
     "--help") help ;;
   esac
 fi
