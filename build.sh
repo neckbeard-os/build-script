@@ -5,43 +5,41 @@
 # -----------------------------------------
 
 # Distro
-export DISTRO_NAME="Neckbeard OS"
-export DISTRO_PATHNAME="neckbeard-os"
-export DISTRO_VERSION="0.1.0"
-export DISTRO_CODENAME=""
+DISTRO_NAME="Neckbeard OS"
+DISTRO_PATHNAME="neckbeard-os"
+DISTRO_VERSION="0.1.0"
 
 # Package versions
-export CROSS_MAKE_VERSION="0.9.9"
-export SYSLINUX_VERSION="6.03"
-export KERNEL_VERSION="5.15.6"
-export TOYBOX_VERSION="0.8.4" # 0.8.6 is weird :P
+CROSS_MAKE_VERSION="0.9.9"
+SYSLINUX_VERSION="6.03"
+KERNEL_VERSION="5.15.6"
+TOYBOX_VERSION="0.8.4" # 0.8.6 is weird :P
 
 # Download URLs
-export MUSL_CROSS_URL="https://musl.cc/x86_64-linux-musl-cross.tgz"
-export CROSS_MAKE_URL="https://github.com/richfelker/musl-cross-make/archive/v$CROSS_MAKE_VERSION.tar.gz"
-export SYSLINUX_URL="http://kernel.org/pub/linux/utils/boot/syslinux/syslinux-${SYSLINUX_VERSION}.tar.xz"
-export KERNEL_URL="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
-export TOYBOX_URL="https://github.com/landley/toybox/archive/$TOYBOX_VERSION.tar.gz"
+MUSL_CROSS_URL="https://musl.cc/x86_64-linux-musl-cross.tgz"
+CROSS_MAKE_URL="https://github.com/richfelker/musl-cross-make/archive/v$CROSS_MAKE_VERSION.tar.gz"
+SYSLINUX_URL="http://kernel.org/pub/linux/utils/boot/syslinux/syslinux-${SYSLINUX_VERSION}.tar.xz"
+KERNEL_URL="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
+TOYBOX_URL="https://github.com/landley/toybox/archive/$TOYBOX_VERSION.tar.gz"
 
 # Folders
-export BASE_DIR="$(pwd)"
-export WORKSPACE_DIR="$BASE_DIR/workspace"
-export DOWNLOADS_DIR="$BASE_DIR/downloads"
+BASE_DIR="$(pwd)"
+WORKSPACE_DIR="$BASE_DIR/workspace"
+DOWNLOADS_DIR="$BASE_DIR/downloads"
 
 # Compile options
-export ARCH="x86_64"
-export CORES=$(nproc)
+ARCH="x86_64"
+CORES="$(nproc)"
 
 # Filename
-export FILENAME="$DISTRO_PATHNAME-$ARCH-$DISTRO_VERSION.iso"
+# FILENAME="$DISTRO_PATHNAME-$ARCH-$DISTRO_VERSION.iso"
 
-# Text
-export BOLD="$(tput bold)"
-export RED="$(tput setaf 1)"
-export GREEN="$(tput setaf 2)"
-export YELLOW="$(tput setaf 3)"
-export WHITE="$(tput setaf 7)"
-export RESET="$(tput sgr0)"
+# Colors
+BOLD="$(tput bold)"
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+YELLOW="$(tput setaf 3)"
+RESET="$(tput sgr0)"
 
 # ---------
 # Utilities
@@ -54,7 +52,7 @@ has_root () {
 }
 
 has_decent_cpu () {
-  if [ $CORES -lt 4 ]; then
+  if [ "$CORES" -lt 4 ]; then
     echo "${BOLD}${YELLOW}Warning:${RESET} ${CORES} CPU cores, expect a long build time"
     echo ""
     sleep 1
@@ -70,17 +68,17 @@ log () {
 # Prepare workspace
 # -----------------
 prepare_workspace () {
-  if [ ! -d $WORKSPACE_DIR ]; then
+  if [ ! -d "$WORKSPACE_DIR" ]; then
     log "Creating $WORKSPACE_DIR folder"
 
-    mkdir --parents $WORKSPACE_DIR || exit
-    mkdir --parents $WORKSPACE_DIR/iso/boot || exit
-    mkdir --parents $WORKSPACE_DIR/iso/isolinux || exit
+    mkdir --parents "$WORKSPACE_DIR" || exit
+    mkdir --parents "$WORKSPACE_DIR"/iso/boot || exit
+    mkdir --parents "$WORKSPACE_DIR"/iso/isolinux || exit
   fi
 
-  if [ ! -d $DOWNLOADS_DIR ]; then
-    log "Creating $DOWNLOADS_DIR folder"
-    mkdir --parents $DOWNLOADS_DIR || exit
+  if [ ! -d "$DOWNLOADS_DIR" ]; then
+    log "Creating ${DOWNLOADS_DIR} folder"
+    mkdir --parents "$DOWNLOADS_DIR" || exit
   fi
 }
 
@@ -146,7 +144,7 @@ download_toybox () {
 }
 
 download_dependencies () {
-  cd $DOWNLOADS_DIR || exit
+  cd "$DOWNLOADS_DIR" || exit
 
   download_toolchain
   download_syslinux
@@ -170,7 +168,7 @@ EOF
 welcome () {
   cat <<EOF
 
-This is the build script for ${BOLD}${GREEN}Neckbeard OS${RESET}
+This is the build script for ${BOLD}${GREEN}${DISTRO_NAME}${RESET}
 
 It will setup our cross-compiler toolchain
 Download the source and compile it for the ${BOLD}${ARCH}${RESET} arch
@@ -199,8 +197,8 @@ has_root
 welcome
 has_decent_cpu
 
-if [ -n $1 ]; then
-  case $1 in
+if [ -n "$1" ]; then
+  case "$1" in
     "--all") build_all ;;
     "--prepare-workspace") prepare_workspace ;;
     "--download-dependencies") download_dependencies ;;
@@ -208,7 +206,6 @@ if [ -n $1 ]; then
   esac
 fi
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
   help
 fi
-
