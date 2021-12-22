@@ -9,6 +9,10 @@ DISTRO_NAME="Neckbeard OS"
 # DISTRO_PATHNAME="neckbeard-os"
 # DISTRO_VERSION="0.1.0"
 
+# Compile options
+ARCH="x86_64"
+CORES="$(nproc)"
+
 # Package versions
 CROSS_MAKE_VERSION="0.9.9"
 SYSLINUX_VERSION="6.03"
@@ -16,9 +20,9 @@ KERNEL_VERSION="5.15.6"
 TOYBOX_VERSION="0.8.4" # 0.8.6 is weird :P
 
 # Download URLs
-MUSL_CROSS_URL="https://musl.cc/x86_64-linux-musl-cross.tgz"
+MUSL_CROSS_URL="https://musl.cc/$ARCH-linux-musl-cross.tgz"
 CROSS_MAKE_URL="https://github.com/richfelker/musl-cross-make/archive/v$CROSS_MAKE_VERSION.tar.gz"
-SYSLINUX_URL="http://kernel.org/pub/linux/utils/boot/syslinux/syslinux-${SYSLINUX_VERSION}.tar.xz"
+SYSLINUX_URL="http://kernel.org/pub/linux/utils/boot/syslinux/syslinux-$SYSLINUX_VERSION.tar.xz"
 KERNEL_URL="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$KERNEL_VERSION.tar.xz"
 TOYBOX_URL="https://github.com/landley/toybox/archive/$TOYBOX_VERSION.tar.gz"
 
@@ -27,12 +31,8 @@ BASE_DIR="$(pwd)"
 WORKSPACE_DIR="$BASE_DIR/workspace"
 DOWNLOADS_DIR="$BASE_DIR/downloads"
 
-# Compile options
-ARCH="x86_64"
-CORES="$(nproc)"
-
 # Filename
-# FILENAME="$DISTRO_PATHNAME-$ARCH-$DISTRO_VERSION.iso"
+# FILENAME="$DISTRO_PATHNAME-$DISTRO_VERSION-$ARCH.iso"
 
 # Colors
 BOLD="$(tput bold)"
@@ -40,6 +40,7 @@ RED="$(tput setaf 1)"
 GREEN="$(tput setaf 2)"
 YELLOW="$(tput setaf 3)"
 RESET="$(tput sgr0)"
+
 
 # ---------
 # Utilities
@@ -60,15 +61,15 @@ has_decent_cpu () {
 }
 
 log () {
-  echo "${BOLD}${GREEN}➜${RESET} ${1}"
+  echo "${BOLD}${GREEN}➜ ${RESET} ${1} ${BOLD}${2}${RESET}"
 }
 
 success () {
-  echo "${BOLD}${GREEN}✔${RESET} ${1}"
+  echo "${BOLD}${GREEN}✔ ${RESET} ${1}"
 }
 
 error () {
-  echo "${BOLD}${RED}¯\_(ツ)_/¯${RESET} ${1}"
+  echo "${BOLD}${RED}¯\_(ツ)_/¯ ${RESET} ${1}"
   exit 1
 }
 
@@ -77,7 +78,7 @@ error () {
 # -----------------
 prepare_workspace () {
   if [ ! -d "$WORKSPACE_DIR" ]; then
-    log "Creating $WORKSPACE_DIR folder"
+    log "Creating" "$WORKSPACE_DIR"
 
     mkdir --parents "$WORKSPACE_DIR" || exit
     mkdir --parents "$WORKSPACE_DIR"/iso/boot || exit
@@ -85,7 +86,7 @@ prepare_workspace () {
   fi
 
   if [ ! -d "$DOWNLOADS_DIR" ]; then
-    log "Creating ${DOWNLOADS_DIR} folder"
+    log "Creating" "$DOWNLOADS_DIR"
     mkdir --parents "$DOWNLOADS_DIR" || exit
   fi
 }
@@ -95,21 +96,21 @@ prepare_workspace () {
 # Download & Extract
 # ------------------
 download_musl_cross () {
-  log "Downloading linux x86_64-linux-musl-cross.tgz"
+  log "Downloading" "$ARCH-linux-musl-cross.tgz"
   wget $MUSL_CROSS_URL -q --show-progress --progress=bar:force 2>&1
 
-  log "Extracting x86_64-linux-musl-cross.tgz"
+  log "Extracting" "$ARCH-linux-musl-cross.tgz"
 
-  tar -xf x86_64-linux-musl-cross.tgz --checkpoint=.100 || exit
+  tar -xf $ARCH-linux-musl-cross.tgz --checkpoint=.100 || exit
   echo ""
-  rm -rf x86_64-linux-musl-cross.tgz
+  rm -rf $ARCH-linux-musl-cross.tgz
 }
 
 download_cross_make () {
-  log "Downloading cross make v$CROSS_MAKE_VERSION.tar.gz"
+  log "Downloading" "v$CROSS_MAKE_VERSION.tar.gz"
   wget $CROSS_MAKE_URL -q --show-progress --progress=bar:force 2>&1
 
-  log "Extracting v$CROSS_MAKE_VERSION.tar.gz"
+  log "Extracting" "v$CROSS_MAKE_VERSION.tar.gz"
   tar -xf v$CROSS_MAKE_VERSION.tar.gz --checkpoint=.100 || exit
   echo ""
   rm -rf v$CROSS_MAKE_VERSION.tar.gz
@@ -121,30 +122,30 @@ download_toolchain () {
 }
 
 download_syslinux () {
-  log "Downloading syslinux-$SYSLINUX_VERSION.tar.xz"
+  log "Downloading" "syslinux-$SYSLINUX_VERSION.tar.xz"
   wget $SYSLINUX_URL -q --show-progress --progress=bar:force 2>&1
 
-  log "Extracting syslinux-$SYSLINUX_VERSION.tar.xz"
+  log "Extracting" "syslinux-$SYSLINUX_VERSION.tar.xz"
   tar -xf syslinux-$SYSLINUX_VERSION.tar.xz --checkpoint=.100 || exit
   echo ""
   rm -rf syslinux-$SYSLINUX_VERSION.tar.xz
 }
 
 download_kernel () {
-  log "Downloading linux-$KERNEL_VERSION.tar.xz"
+  log "Downloading" "linux-$KERNEL_VERSION.tar.xz"
   wget $KERNEL_URL -q --show-progress --progress=bar:force 2>&1
 
-  log "Extracting linux-$KERNEL_VERSION.tar.xz"
+  log "Extracting" "linux-$KERNEL_VERSION.tar.xz"
   tar -xf linux-$KERNEL_VERSION.tar.xz --checkpoint=.100 || exit
   echo ""
   rm -rf linux-$KERNEL_VERSION.tar.xz
 }
 
 download_toybox () {
-  log "Downloading toybox-$TOYBOX_VERSION.tar.xz"
+  log "Downloading" "toybox-$TOYBOX_VERSION.tar.xz"
   wget $TOYBOX_URL -q --show-progress --progress=bar:force 2>&1
 
-  log "Extracting toybox-$TOYBOX_VERSION.tar.xz"
+  log "Extracting" "toybox-$TOYBOX_VERSION.tar.xz"
   mv $TOYBOX_VERSION.tar.gz toybox-$TOYBOX_VERSION.tar.xz
   tar -xf toybox-$TOYBOX_VERSION.tar.xz --checkpoint=.100 || exit
   echo ""
@@ -164,15 +165,38 @@ download_dependencies () {
 # ---------------
 # Setup toolchain
 # ---------------
-build_toolchain () {
-  cd "$DOWNLOADS_DIR"/musl-cross-make-"$CROSS_MAKE_VERSION" || exit
+setup_toolchain () {
+  cd "$DOWNLOADS_DIR/musl-cross-make-$CROSS_MAKE_VERSION" || exit
 
   log "Building toolchain"
+  echo "This will take a couple of minutes"
+  sleep 2
   
   mv config.mak.dist config.mak
   echo 'TARGET = x86_64-linux-musl' >> config.mak
   
-  make -j"$THREADS"
+  make -j"$CORES"
+}
+
+
+# --------------
+# Compile Toybox
+# --------------
+compile_toybox () {
+  cd "$DOWNLOADS_DIR/toybox-$TOYBOX_VERSION" || exit
+
+  log "Compiling" "toybox"
+
+  make clean
+  make defconfig
+
+  # Build static toybox with musl-cross-make gcc toolchain
+  LDFLAGS="--static" CROSS_COMPILE=$DOWNLOADS_DIR/$ARCH-linux-musl-cross/bin/$ARCH-linux-musl- make toybox
+
+  mv toybox "$WORKSPACE_DIR/"
+
+  # Build static with clang using musl-cross-make as sysroot
+  CFLAGS="-target $ARCH-pc-linux-musl --sysroot $DOWNLOADS_DIR/$ARCH-linux-musl-cross" LDFLAGS="-static" CC=clang make toybox
 }
 
 
@@ -186,6 +210,8 @@ ${BOLD}Available commands${RESET}
   --prepare-workspace
   --download-dependencies
   --setup-toolchain
+  --compile-toybox
+  --compile-kernel
 EOF
 }
 
@@ -210,6 +236,8 @@ build_all () {
   prepare_workspace
   download_dependencies
   setup_toolchain
+  compile_toybox
+  compile_kernel
 
   success "All done"
 }
@@ -228,6 +256,7 @@ if [ -n "$1" ]; then
     "--prepare-workspace") prepare_workspace ;;
     "--download-dependencies") download_dependencies ;;
     "--setup-toolchain") setup_toolchain ;;
+    "--compile-toybox") compile_toybox ;;
     "--help") help ;;
   esac
 fi
