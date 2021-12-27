@@ -1,7 +1,8 @@
 Build Script
 ________________________________________________________________________
 
-This is the build script that will download the musl cross-compiler
+This is the build script that will create a minimal Linux system
+utilizing toybox, clang/llvm and musl libc
 
 
 Disclaimer
@@ -15,7 +16,8 @@ Development
 ________________________________________________________________________
 
 docker-compose up --build -d
-docker exec -it build-script-build-1 sh 
+docker exec -it build-script-build-1 sh
+cd scripts
 ./build.sh --all
 
 docker-compose down --remove-orphans 
