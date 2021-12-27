@@ -5,12 +5,7 @@ help_screen () {
 ${BOLD}Available commands${RESET}
   --all
   --prepare-workspace
-  --download-dependencies
   --setup-toolchain
-  --compile-toybox
-  --compile-kernel
-  --setup-rootfs
-  --setup-bootloader
 EOF
 }
 

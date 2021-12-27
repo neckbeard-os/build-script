@@ -1,27 +1,23 @@
 #!/bin/sh
 
+# shellcheck disable=SC2155
+
 # Distro
 export DISTRO_NAME="Neckbeard OS"
 export DISTRO_PATHNAME="neckbeard-os"
 export DISTRO_VERSION="0.1.0"
 export ARCH="x86_64"
 
-# Download URLs
-export MUSL_CROSS_URL="https://musl.cc/$ARCH-linux-musl-cross.tgz"
-export TOOLCHAIN_URL="https://github.com/neckbeard-os/toolchain/archive/v0.9.9.tar.gz"
-export KERNEL_URL="https://github.com/neckbeard-os/linux.git"
+# Directories
+export ROOT_DIR="$(pwd)"
+export WORKSPACE_DIR="$ROOT_DIR/workspace"
+export DOWNLOADS_DIR="$ROOT_DIR/downloads"
 
-# Folders
-export BASE_DIR="$(pwd)"
-export WORKSPACE_DIR="$BASE_DIR/workspace"
-export DOWNLOADS_DIR="$BASE_DIR/downloads"
+# # Toolchain options (compiler flags)
+# export CFLAGS="-target $ARCH-pc-linux-musl --sysroot $DOWNLOADS_DIR/$ARCH-linux-musl-cross"
+# export LDFLAGS="-static"
+# export CC=clang
 
-# Compile options
-export LDFLAGS="--static"
-export CROSS_COMPILE=../x86_64-linux-musl-cross/bin/x86_64-linux-musl-
-# make toybox
-export CFLAGS="-target x86_64-pc-linux-musl --sysroot ../x86_64-linux-musl-cross"
-export LDFLAGS="-static"
 export CORES="$(nproc)"
 
 # Filename

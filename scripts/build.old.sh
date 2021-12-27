@@ -103,7 +103,7 @@ compile_kernel () {
 
   cd "$DOWNLOADS_DIR/toybox-$TOYBOX_VERSION" || exit
   
-  make root CROSS_COMPILE=$ARCH-linux-musl- LINUX="$DOWNLOADS_DIR/linux-$KERNEL_VERSION"
+  make root CROSS_COMPILE="$ARCH-linux-musl-" LINUX="$DOWNLOADS_DIR/linux-$KERNEL_VERSION"
 
   mv "root/$ARCH/" "$WORKSPACE_DIR/"
 }

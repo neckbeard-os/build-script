@@ -1,9 +1,9 @@
 #!/bin/sh
 
-download_architecture_musl_cross () {
+download_architecture_dependencies () {
   if [ ! -d "$ARCH-linux-musl-cross" ]; then
     log "Downloading" "$ARCH-linux-musl-cross.tgz"
-    wget "$MUSL_CROSS_URL" -q --show-progress --progress=bar:force 2>&1
+    wget "https://musl.cc/$ARCH-linux-musl-cross.tgz" -q --show-progress --progress=bar:force 2>&1
 
     log "Extracting" "$ARCH-linux-musl-cross.tgz"
     tar -xf "$ARCH-linux-musl-cross.tgz" --checkpoint=.100 || exit
@@ -13,30 +13,18 @@ download_architecture_musl_cross () {
   fi
 }
 
-download_cross_make () {
-  if [ ! -d "musl-cross-make-$CROSS_MAKE_VERSION" ]; then
-    log "Downloading" "v$CROSS_MAKE_VERSION.tar.gz"
-    wget "$CROSS_MAKE_URL" -q --show-progress --progress=bar:force 2>&1
-
-    log "Extracting" "v$CROSS_MAKE_VERSION.tar.gz"
-    tar -xf "v$CROSS_MAKE_VERSION.tar.gz" --checkpoint=.100 || exit
-
-    echo
-    rm -rf "v$CROSS_MAKE_VERSION.tar.gz"
-  fi
-}
-
 download_toolchain () {
   cd "$DOWNLOADS_DIR" || exit
 
-  download_architecture_musl_cross
-  download_cross_make
+  download_architecture_dependencies
+
+  github_fetch "neckbeard-os/toolchain"
 }
 
 setup_toolchain () {
   download_toolchain
 
-  cd "$DOWNLOADS_DIR/musl-cross-make-$CROSS_MAKE_VERSION" || exit
+  cd "$DOWNLOADS_DIR/toolchain" || exit
 
   log "Building toolchain"
   

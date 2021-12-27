@@ -1,23 +1,7 @@
-Neckbeard OS
+Build Script
 ________________________________________________________________________
 
-This is a highly opinionated alternative Linux® "distro"
-
-Do you despise Java? Cant stand Python? Not a fan of how bloated the GNU
-coreutils have gotten over the years? Well, then perhaps this shitty
-project might be for you
-
-Aiming for POSIX® compliance, no bashisms. And certainly no systemd.
-
-
-Community
-________________________________________________________________________
-
-I mean, its non existent right now. But if you are a true neckbeard,
-then you might feel at home over at IRC
-
-irc://irc.libera.chat/#neckbeard-os
-
+This is the build script that will download the musl cross-compiler
 
 
 Disclaimer
@@ -25,7 +9,6 @@ ________________________________________________________________________
 
 Still under heavy development and isnt even in alpha stage right now
 The main branch will remain the dev branch until 1.0
-
 
 
 Development

@@ -15,6 +15,27 @@ has_decent_cpu () {
   fi
 }
 
+github_fetch () {
+  REPOSITORY="$1"
+  ROOT_DIR="$(pwd)"
+  TEMP_DIR="$(mktemp -d)"
+  TARGET_DIR="$(basename "$REPOSITORY")"
+  GITHUB_URL="https://github.com/$REPOSITORY/archive/master.tar.gz"
+
+  if [ -z "$1" ]; then
+    echo "Usage: $0 user/repo"
+    exit 1
+  else
+    cd "$TEMP_DIR" || exit
+
+    wget "$GITHUB_URL" -q --show-progress --progress=bar:force 2>&1
+    tar -zxf "master.tar.gz" --strip-components=1 --checkpoint=.100
+
+    echo
+    mv "$TEMP_DIR" "$ROOT_DIR/$TARGET_DIR"
+  fi
+}
+
 log () {
   echo "${BOLD}${GREEN}➜ ${RESET} ${1} ${BOLD}${2}${RESET}"
 }
