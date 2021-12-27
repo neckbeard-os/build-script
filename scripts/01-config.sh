@@ -6,7 +6,7 @@
 export DISTRO_NAME="Neckbeard OS"
 export DISTRO_PATHNAME="neckbeard-os"
 export DISTRO_VERSION="0.1.0"
-export ARCH="x86_64"
+export ARCH="x86_64" # x86_64, aarch64 or riscv64
 
 # Directories
 export ROOT_DIR="$(pwd)"

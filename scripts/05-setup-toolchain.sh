@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# https://musl.cc/aarch64-linux-musl-cross.tgz
+# https://more.musl.cc/8/x86_64-linux-musl/riscv32-linux-musl-cross.tgz
+# https://musl.cc/riscv64-linux-musl-cross.tgz
+# https://musl.cc/x86_64-linux-musl-cross.tgz
+
 download_architecture_dependencies () {
   if [ ! -d "$ARCH-linux-musl-cross" ]; then
     log "Downloading" "$ARCH-linux-musl-cross.tgz"
