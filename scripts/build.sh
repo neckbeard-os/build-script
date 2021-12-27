@@ -14,12 +14,17 @@
 . ./06-compile-utilities.sh
 
 build_all () {
+  build_start=$(date +%s%N)
+
   prepare_workspace
   setup_toolchain
 
   compile_utilities
 
   success "(⌐■_■)"
+
+  build_total=$((($(date +%s%N) - build_start) / 1000000000))
+  echo "Build took: $build_total s"
 }
 
 has_root
