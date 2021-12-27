@@ -2,7 +2,7 @@ version: '2'
 
 services:
   build:
-    image: build-iso
+    image: build
     build: .
     stdin_open: true
     tty: true
