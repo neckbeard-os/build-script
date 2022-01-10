@@ -5,7 +5,6 @@
 # -----------------------------------------
 
 # shellcheck disable=SC1091
-# shellcheck source=/dev/null build.sh
 # shellcheck source=/dev/null
 
 . ./01-config.sh
