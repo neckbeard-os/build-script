@@ -56,10 +56,6 @@ colour() {
 	echo "Usage: [Colour nr1] [String 1] [Colour nr2] [String 2] [Colour nr3] [String 3] [Colour nr4] [String 4]"
 	echo "Maximum is 8, 4 colours and 4 strings"
 	echo "Allowed colour numbers are within the range of 1 to 255"
-	#	reset="$(tput sgr0)"
-	#	c1="$(tput setaf "$1")"
-	#	for i in "${@:2}"; do printf '%s ' "$c1$i$reset"; done
-	#	printf '\n'
 	fi
 	
 }
@@ -68,7 +64,6 @@ colour 46 "GCC-Build" 15 ": Starting build script"
 
 BUILD_DIR=/docker/build
 CROSS_DIR=/opt/cross
-# CROSS_BIN_DIR=/opt/cross/bin
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
 BUILD_GLIBC="$BUILD_DIR/build-glibc"
@@ -79,8 +74,6 @@ mkdir -p "${BUILD_DIR}"
 colour 46 "GCC-Build" 226 " $BUILD_DIR " 48 "Complete"
 mkdir -p "${CROSS_DIR}"
 colour 46 "GCC-Build" 226 " $CROSS_DIR " 48 "Complete"
-# mkdir -p "${CROSS_BIN_DIR}"
-# colour 46 "GCC-Build" 226 " $CROSS_BIN_DIR " 48 "Complete"
 mkdir -p "${BUILD_BINUTILS}"
 colour 46 "GCC-Build" 226 " $BUILD_BINUTILS " 48 "Complete"
 mkdir -p "${BUILD_GCC}"
@@ -124,6 +117,7 @@ ISL="${BUILD_DIR}/isl-0.24"
 CLOOG="${BUILD_DIR}/cloog-0.18.1"
 ARCH="x86_x64"
 TARGET="amd64-linux"
+WMUSL=""
 HOST="amd64-linux"
 
 # Create symbolic links from the GCC directory to some of the other directories. 
@@ -194,6 +188,7 @@ cd "$BUILD_DIR"
 colour 46 "GCC-Build" 15 ": Install glibc's standard C library to /opt/cross/amd64-linux"
 colour 46 "GCC-Build" 15 ": Changing directory to " 226 "$BUILD_GLIBC"
 cd "$BUILD_GLIBC"
+# cd "$BUILD_MUSL"
 "$GLIBC"/configure --prefix="$CROSS_DIR/$TARGET" --build=$MACHTYPE --host="$HOST" --target="$TARGET" --with-headers="$CROSS_DIR/$TARGET/include" --disable-multilib libc_cv_forced_unwind=yes
 make install-bootstrap-headers=yes install-headers
 make -j4 csu/subdir_lib
