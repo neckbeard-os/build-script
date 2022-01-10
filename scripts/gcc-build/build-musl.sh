@@ -3,8 +3,8 @@
 
 BUILD_DIR=/docker/build
 CROSS_DIR=/opt/cross
-CONFIGF="scripts/gcc-build/config.mak"
-MUSL_DIR="/docker/build/musl-cross-make"
+CONFIGF=docker/scripts/gcc-build/config.mak
+MUSL_DIR=docker/build/musl-cross-make
 
 # The available target architectures
 # The currently set one is x84_64-linux-musl, use sed -i and change it in config.mak before copying it
