@@ -5,7 +5,9 @@
 # -----------------------------------------
 
 # shellcheck disable=SC1091
-{
+# shellcheck source=/dev/null build.sh
+# shellcheck source=/dev/null
+
 . ./01-config.sh
 . ./02-utilities.sh
 . ./03-screens.sh
@@ -49,4 +51,3 @@ fi
 if [ -z "$1" ]; then
   help_screen
 fi
-}
