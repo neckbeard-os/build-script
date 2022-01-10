@@ -1,0 +1,18 @@
+# Thanks to @ZendaiOwl for help with this one
+
+FROM debian:latest
+
+RUN set -x
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
+clang gcc cross-gcc-dev ca-certificates build-essential libncurses5 libncurses5-dev \
+libelf-dev libssl-dev bc make xz-utils file gawk curl wget tar rsync openssl \
+zsh bash bash-completion pv nano lzip texinfo sed gzip cpio grub-common zstd git
+
+COPY . /docker
+WORKDIR /docker
+
+RUN chmod +x ./scripts/*.sh
+RUN apt-get install -y --no-install-recommends sudo
+RUN useradd -rm -d /home/Neckbeard -s /bin/bash -g root -G sudo -u 1001 Neckbeard
+RUN ./scripts/installStarship.sh
