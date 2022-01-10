@@ -1,4 +1,6 @@
 #!/bin/bash
+# @ZendaiOwl
+
 sudo docker-compose up --build -d || exit 1
 
 ./launch.sh || exit 1
