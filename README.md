@@ -23,11 +23,11 @@ cd scripts
 docker-compose down --remove-orphans 
 
 ________________________________________________________________________
-♠ ♥ ♣ ♦ 🔒@ZendaiOwl
-Launch with
-࿓❯ ./start.sh 
-	It will create a container and then execute ./launch.sh
-࿓❯ ./launch.sh
-	It will enter the docker container and execute the build-gcc.sh/build-musl.sh script
-࿓❯ docker/scripts/gcc-build/build-gcc.sh
-࿓❯ docker/scripts/gcc-build/build-musl.sh
+♠ ♥ ♣ ♦ 🔒  @ZendaiOwl  
+Launch with  
+࿓❯ ./start.sh  
+	It will create a container and then execute ./launch.sh  
+࿓❯ ./launch.sh  
+	It will enter the docker container and execute the build-gcc.sh/build-musl.sh script  
+࿓❯ docker/scripts/gcc-build/build-gcc.sh  
+࿓❯ docker/scripts/gcc-build/build-musl.sh  
