@@ -1,4 +1,5 @@
 #!/bin/bash
+# @ZendaiOwl
 FILE="$HOME/.bashrc"
 sh -c "$(curl -fsSL https://starship.rs/install.sh --yes)"
 if ! grep -q 'eval "$(starship init bash)"' "$FILE"; then
