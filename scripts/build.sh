@@ -5,8 +5,7 @@
 # -----------------------------------------
 
 # shellcheck disable=SC1091
-# shellcheck=disable
-
+{
 . ./01-config.sh
 . ./02-utilities.sh
 . ./03-screens.sh
@@ -50,3 +49,4 @@ fi
 if [ -z "$1" ]; then
   help_screen
 fi
+}
