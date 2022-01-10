@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 # -----------------------------------------
 # This is the build script for Neckbeard OS
 # -----------------------------------------
 
 # shellcheck disable=SC1091
+# shellcheck=disable
 
 . ./01-config.sh
 . ./02-utilities.sh
