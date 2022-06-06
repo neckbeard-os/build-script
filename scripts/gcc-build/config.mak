@@ -1,5 +1,7 @@
-# @ZendaiOwl
-#
+#!/usr/bin/env bash
+# @Victor-ray, S. <victorray91@pm.me> 
+# https://github.com/ZendaiOwl
+# 
 # config.mak.dist - sample musl-cross-make configuration
 #
 # Copy to config.mak and edit as desired.

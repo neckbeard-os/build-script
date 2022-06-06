@@ -1,5 +1,6 @@
-#!/bin/bash
-# @ZendaiOwl
+#!/usr/bin/env bash
+# @Victor-ray, S. <victorray91@pm.me> 
+# https://github.com/ZendaiOwl
 # 
 # https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign
 
@@ -93,10 +94,10 @@ colour 46 "GCC-Build" 15 ": Download " 48 "Complete"
 colour 46 "GCC-Build" 15 ": Starting build"
 # Extract all the source packages.
 colour 46 "GCC-Build" 15 ": Extracting source packages.."
-for f in *.tar*; do tar xf $f; done
+for f in *.tar*; do tar xf "$f"; done
 colour 46 "GCC-Build" 15 ": Extracting source packages " 48 "Complete"
 colour 46 "GCC-Build" 15 ": Removing source packages.."
-for f in *.tar*; do rm $f; done
+for f in *.tar*; do rm "$f"; done
 colour 46 "GCC-Build" 15 ": Removing source packages " 48 "Complete"
 
 BINUTILS="${BUILD_DIR}/binutils-2.37"

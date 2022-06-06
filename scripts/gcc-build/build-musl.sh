@@ -1,6 +1,7 @@
-#!/bin/bash
-# @ZendaiOwl
-
+#!/usr/bin/env bash
+# @Victor-ray, S. <victorray91@pm.me> 
+# https://github.com/ZendaiOwl
+# 
 BUILD_DIR=/build
 CROSS_DIR=/opt/cross
 CONFIGF="scripts/gcc-build/config.mak"
