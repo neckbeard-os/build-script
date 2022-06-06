@@ -12,13 +12,13 @@ debug() {
 }
 
 debug "Starting build script for GCC Cross-Compiler"
-
+### × DIRECTORIES × ###
 BUILD_DIR="/docker/build"
 CROSS_DIR="/opt/cross"
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
 BUILD_GLIBC="$BUILD_DIR/build-glibc"
-
+# × × × × × × × × × × × × × × × × × × # 
 debug "Creating directories"
 
 debug " $BUILD_DIR"
@@ -29,13 +29,13 @@ debug " $BUILD_BINUTILS"
 mkdir -p "${BUILD_BINUTILS}"
 debug " $BUILD_GCC"
 mkdir -p "${BUILD_GCC}"
-debug " $BUILD_GLIBC"
+debug "$BUILD_GLIBC"
 mkdir -p "$BUILD_GLIBC"
 
 debug "Created directories"
 debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
-debug "Downloading binutils gcc kernel glibc mpfr gmp mpc isl cloog"
+debug "Downloading: Binutils GCC Kernel Glibc MPFR GMP MPC ISL CLOOG"
 wget https://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.xz
 wget https://mirrors.kernel.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz
 wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.xz
@@ -47,8 +47,7 @@ wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastru
 wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
 debug "Download completed"
 
-# [ Build Steps ]
-debug "Starting build"
+### × [ Build Steps ] × ###
 # Extract all the source packages.
 debug "Extracting source packages.."
 for f in *.tar*; do tar xf "${f}"; done
@@ -56,7 +55,7 @@ debug "Extracted"
 debug "Removing source packages.."
 for f in *.tar*; do rm "${f}"; done
 debug "Removed"
-
+### × VARIABLES × ###
 BINUTILS="${BUILD_DIR}/binutils-2.37"
 GCC="${BUILD_DIR}/gcc-10.3.0"
 KERNEL="${BUILD_DIR}/linux-5.15.12"
@@ -70,7 +69,8 @@ ARCH="x86_x64"
 TARGET="amd64-linux"
 # WMUSL=""
 HOST="amd64-linux"
-
+# × × × × × × × × × × × × × × × #
+### × SYMLINKS × ###
 # Create symbolic links from the GCC directory to some of the other directories. 
 # These five packages are dependencies of GCC, and when the symbolic links are present, 
 # GCC’s build script will build them automatically.
@@ -103,7 +103,7 @@ export PATH=/opt/cross/bin:$PATH
 # A self-hosted AArch64 Linux compiler could, in theory, use all the headers and libraries placed here. 
 # Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
 
-# Build/install linux kernel headers
+# Build linux kernel headers
 debug "Build: Linux Kernel Headers"
 debug "Changing working directory to $KERNEL"
 cd "$KERNEL" || exit 1
@@ -112,7 +112,7 @@ debug "Linux Kernel Headers - Done"
 debug "Changing working directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
-# Build/install binutils
+# Build Binutils
 debug "Build: Binutils"
 debug "Changing working directory to $BUILD_DIR"
 cd "$BUILD_BINUTILS" || exit 1
