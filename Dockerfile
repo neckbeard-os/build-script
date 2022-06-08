@@ -6,13 +6,12 @@ FROM fedora:latest
 
 RUN set -x
 RUN dnf update -y
-RUN dnf install -y patch make gawk wget curl git cronie binutils \
-    xz pxz tar zip bzip2 texinfo bison flex ncurses \
-    ncurses-term ncurses-base ncurses-libs \
-    boost-build build2 ncdu binclock colorize nano \
-    rsync gcc libgcc gcc-aarch64-linux-gnu musl-gcc clang musl-clang \
-    gmp-devel libmpc-devel mpfr-devel cloog-devel isl-devel gcc-c++ \
-    libstdc++ && dnf clean all
+RUN dnf install -y patch make gawk wget curl git cronie \
+    xz pxz tar zip bzip2 texinfo bison flex ncurses coreutils diffutils findutils \
+    grep gzip tar sed ncurses-term ncurses-base ncurses-libs \
+    boost-build build2 ncdu colorize nano \
+    rsync gcc libgcc gcc-aarch64-linux-gnu bash gcc-c++ \
+    libstdc++ glibc gmp-devel libmpc-devel mpfr-devel cloog-devel isl-devel && dnf clean all
 
 COPY . ./docker
 WORKDIR /docker
