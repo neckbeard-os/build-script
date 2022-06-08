@@ -6,6 +6,10 @@
 # 
 CONTAINER="build-script_build_1"
 
-sudo docker exec -it "$CONTAINER" bash -c 'scripts/gcc-build/build-musl.sh'
+#sudo docker exec -it "$CONTAINER" bash -c "scripts/gcc-build/build-musl.sh"
+
+sudo docker exec -it "$CONTAINER" bash -c "scripts/gcc-build/build-gcc-aarch64.sh"
+
+#sudo docker exec -it "$CONTAINER" bash -c "scripts/gcc-build/build-gcc-amd64.sh"
 
 exit 0

@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# @Victor-ray, S. <victorray91@pm.me> 
-# https://github.com/ZendaiOwl
-# 
-# https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign
+# shellcheck disable=SC1073
+# shellcheck disable=SC2188 
+<<COMMENT
+@Victor-ray, S. <victorray91@pm.me> 
+(https://github.com/ZendaiOwl)
+
+Builds a cross-compiler for AArch64bit instructionset (ARM64bit)
+I followed this article/blog post and modified it 
+
+https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign - signature for the kernel
+COMMENT
 #×× DEBUG
 debug() {
 	GREENISH="$(tput setaf 46)"
@@ -65,15 +72,18 @@ GLIBC="${BUILD_DIR}/glibc-2.34"
 # MPC="$BUILD_DIR}/mpc-1.2.1"
 # ISL="${BUILD_DIR}/isl-0.24"
 # CLOOG="${BUILD_DIR}/cloog-0.18.1"
-ARCH="x86_x64"
-TARGET="amd64-linux"
+#ARCH="x86_x64"
+ARCH="arm64"
+#TARGET="amd64-linux"
+TARGET="aarch64-linux"
 # WMUSL=""
-HOST="amd64-linux"
+#HOST="amd64-linux"
+HOST="aarch64-linux"
 # × × × × × × × × × × × × × × × #
 ### × SYMLINKS × ###
 # Create symbolic links from the GCC directory to some of the other directories. 
 # These five packages are dependencies of GCC, and when the symbolic links are present, 
-# GCC’s build script will build them automatically.
+# GCC’s build script will [build them automatically](https://gcc.gnu.org/install/download.html).
 debug "Changing directory to $BUILD_DIR"
 cd "$GCC" || exit 1
 debug "Creating symbolic links"
@@ -91,19 +101,27 @@ debug "Symlinks created"
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
-# Choose an installation directory, and make sure you have write permission to it. 
-# In the steps that follow, I’ll install the new toolchain to /opt/cross.
-# Throughout the entire build process, make sure the installation’s bin subdirectory is in your PATH environment variable. 
-# You can remove this directory from your PATH later, but most of the build steps expect to find aarch64-linux-gcc and other host tools via the PATH by default.
+<<COMMENT
+Choose an installation directory, and make sure you have write permission to it. 
+In the steps that follow, I’ll install the new toolchain to /opt/cross.
+Throughout the entire build process, make sure the installation’s bin subdirectory is in your PATH environment variable. 
+You can remove this directory from your PATH later, but most of the build steps expect to find aarch64-linux-gcc and other host tools via the PATH by default.
+
+Pay particular attention to the stuff that gets installed under /opt/cross/aarch64-linux/. 
+This directory is considered the system root of an imaginary AArch64 Linux target system. 
+A self-hosted AArch64 Linux compiler could, in theory, use all the headers and libraries placed here. 
+Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
+COMMENT
+
 debug "Exporting /opt/cross/bin to PATH"
 export PATH=/opt/cross/bin:$PATH
 
-# Pay particular attention to the stuff that gets installed under /opt/cross/aarch64-linux/. 
-# This directory is considered the system root of an imaginary AArch64 Linux target system. 
-# A self-hosted AArch64 Linux compiler could, in theory, use all the headers and libraries placed here. 
-# Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
-
-# Build linux kernel headers
+<<COMMENT
+Build linux kernel headers
+This step installs the Linux kernel header files to /opt/cross/aarch64-linux/include, 
+which will ultimately allow programs built using our new toolchain to make 
+system calls to the AArch64 kernel in the target environment.
+COMMENT
 debug "Build: Linux Kernel Headers"
 debug "Changing working directory to $KERNEL"
 cd "$KERNEL" || exit 1
@@ -112,7 +130,15 @@ debug "Linux Kernel Headers - Done"
 debug "Changing working directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
-# Build Binutils
+<<COMMENT
+Build Binutils
+This step builds and installs the cross-assembler, cross-linker, and other tools.
+We've specified aarch64-linux as the target system type. 
+Binutils's configure script will recognize that this target is different from the machine we're building on, 
+and configure a cross-assembler and cross-linker as a result. The tools will be installed to /opt/cross/bin, their names prefixed by aarch64-linux-.
+--disable-multilib means that we only want our Binutils installation to work with programs and libraries using the AArch64 instruction set, 
+and not any related instruction sets such as AArch32.
+COMMENT
 debug "Build: Binutils"
 debug "Changing working directory to $BUILD_DIR"
 cd "$BUILD_BINUTILS" || exit 1
@@ -122,6 +148,7 @@ make install
 debug "Binutils - Done"
 debug "Changing working directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
+
 
 # Build GCC's C & C++ cross-compilers to /opt/cross/bin
 debug "Build GCC's C & C++ cross-compilers to /opt/cross/bin"
@@ -135,7 +162,7 @@ debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
 # Install glibc's standard C library headers to /opt/cross/amd64-linux/include
-debug "Install glibc's standard C library to /opt/cross/amd64-linux"
+debug "Install glibc's standard C library to /opt/cross/${HOST}"
 debug "Changing directory to $BUILD_GLIBC"
 cd "$BUILD_GLIBC" || exit 1
 # cd "$BUILD_MUSL"
@@ -143,9 +170,9 @@ cd "$BUILD_GLIBC" || exit 1
 make install-bootstrap-headers=yes install-headers
 make -j4 csu/subdir_lib
 install csu/crt1.o csu/crti.o csu/crtn.o "$CROSS_DIR/$TARGET/lib"
-amd64-linux-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "$CROSS_DIR/$TARGET/lib/libc.so"
+"$TARGET"-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "$CROSS_DIR/$TARGET/lib/libc.so"
 touch "$CROSS_DIR/$TARGET/include/gnu/stubs.h"
-debug "Install glibc's standard C library to /opt/cross/amd64-linux"
+debug "Install glibc's standard C library to /opt/cross/$TARGET"
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 
@@ -155,7 +182,6 @@ debug "Changing directory to $BUILD_GCC"
 cd "$BUILD_GCC" || exit 1
 make -j4 all-target-libgcc
 make install-target-libgcc
-debug "Install compiler support library"
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 

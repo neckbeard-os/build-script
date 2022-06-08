@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
-# @Victor-ray, S. <victorray91@pm.me> 
-# https://github.com/ZendaiOwl
-# 
+# shellcheck disable=SC1073
+# shellcheck disable=SC2188 
+<<COMMENT
+[Modified the Musl-Cross-Make by Rich Felker](https://github.com/richfelker/musl-cross-make)
+This is the second generation of musl-cross-make, a fast, simple, but advanced makefile-based approach for producing musl-targeting cross compilers
+
+@Victor-ray, S. <victorray91@pm.me> 
+(https://github.com/ZendaiOwl)
+COMMENT
 #×× DEBUG
 debug() {
     PFX="INFO ${*}"
