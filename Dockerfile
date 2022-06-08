@@ -4,6 +4,8 @@
 
 FROM fedora:latest
 
+# FROM --platform=$BUILDPLATFORM fedora
+
 RUN set -x
 RUN dnf update -y
 RUN dnf install -y patch make gawk wget curl git cronie \

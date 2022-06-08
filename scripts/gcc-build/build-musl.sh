@@ -41,7 +41,8 @@ sed -i 's/ISL_SITE = http:\/\/isl.gforge.inria.fr\//ISL_SITE = https:\/\/gcc.gnu
 # sh2eb="TARGET = sh2eb-linux-muslfdpic"
 debug "Setting architecture"
 #shellcheck disable=SC2016
-sed -i 's/# ${x64}/${x64}/g' "./config.mak"
+sed -i 's/#TARGET = arm-linux-musleabi/TARGET = arm-linux-musleabi/' "./config.mak"
+# sed -i 's/#TARGET = x86_64-linux-musl/TARGET = x86_64-linux-musl/' "./config.mak"
 debug "Make musl cross-compiler"
 make
 debug "Completed Musl Cross-Compiler!"
