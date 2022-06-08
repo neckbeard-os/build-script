@@ -67,11 +67,12 @@ BINUTILS="${BUILD_DIR}/binutils-2.37"
 GCC="${BUILD_DIR}/gcc-10.3.0"
 KERNEL="${BUILD_DIR}/linux-5.15.12"
 GLIBC="${BUILD_DIR}/glibc-2.34"
-# MPFR="${BUILD_DIR}/mpfr-4.1.0"
-# GMP="BUILD_DIR}/gmp-6.2.0"
-# MPC="$BUILD_DIR}/mpc-1.2.1"
-# ISL="${BUILD_DIR}/isl-0.24"
-# CLOOG="${BUILD_DIR}/cloog-0.18.1"
+
+MPFR="${BUILD_DIR}/mpfr-4.1.0"
+GMP="BUILD_DIR}/gmp-6.2.0"
+MPC="$BUILD_DIR}/mpc-1.2.1"
+ISL="${BUILD_DIR}/isl-0.24"
+CLOOG="${BUILD_DIR}/cloog-0.18.1"
 #ARCH="x86_x64"
 ARCH="arm64"
 #TARGET="amd64-linux"
@@ -88,15 +89,20 @@ debug "Changing directory to $BUILD_DIR"
 cd "$GCC" || exit 1
 debug "Creating symbolic links"
 debug "Symlink: mpfr"
-ln -s ../mpfr-4.1.0 mpfr
+#ln -s ../mpfr-4.1.0 mpfr
+ln -s "$MPFR"
 debug "Symlink: gmp"
-ln -s ../gmp-6.2.0 gmp
+#ln -s ../gmp-6.2.0 gmp
+ln -s "$GMP"
 debug "Symlink: mpc"
-ln -s ../mpc-1.2.1 mpc
+#ln -s ../mpc-1.2.1 mpc
+ln -s "$MPC"
 debug "Symlink: isl"
-ln -s ../isl-0.24 isl
+#ln -s ../isl-0.24 isl
+ln -s "$ISL"
 debug "Symlink: cloog"
-ln -s ../cloog-0.18.1 cloog
+#ln -s ../cloog-0.18.1 cloog
+ln -s "$CLOOG"
 debug "Symlinks created"
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
