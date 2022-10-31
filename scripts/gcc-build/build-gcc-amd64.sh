@@ -106,15 +106,14 @@ debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 # Choose an installation directory, and make sure you have write permission to it. 
-# In the steps that follow, I’ll install the new toolchain to /opt/cross.
 # Throughout the entire build process, make sure the installation’s bin subdirectory is in your PATH environment variable. 
 # You can remove this directory from your PATH later, but most of the build steps expect to find aarch64-linux-gcc and other host tools via the PATH by default.
 debug "Exporting ${CROSS_DIR}/bin to PATH"
 export PATH="${CROSS_DIR}/bin:$PATH"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-# Pay particular attention to the stuff that gets installed under /opt/cross/aarch64-linux/. 
+# Pay particular attention to the stuff that gets installed under ${CROSS_DIR}/${TARGET}. 
 # This directory is considered the system root of an imaginary AArch64 Linux target system. 
-# A self-hosted AArch64 Linux compiler could, in theory, use all the headers and libraries placed here. 
+# A self-hosted aarch64 or amd64 Linux compiler could, in theory, use all the headers and libraries placed here. 
 # Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 # Build linux kernel headers
