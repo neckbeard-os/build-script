@@ -37,7 +37,7 @@ libmpc-dev libmpfr-dev libgmp-dev libtool zlib1g-dev libexpat-dev \
 gawk build-essential bison flex texinfo gperf patchutils bc
 ```
 
-- Working configuration _(At the moment anyway)_
+Working configuration _(At the moment anyway)_
 
 ```bash
 BINUTILS_VER = 2.33.1
