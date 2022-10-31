@@ -37,6 +37,19 @@ libmpc-dev libmpfr-dev libgmp-dev libtool zlib1g-dev libexpat-dev \
 gawk build-essential bison flex texinfo gperf patchutils bc
 ```
 
+- Working configuration _(At the moment anyway)_
+
+```bash
+BINUTILS_VER = 2.33.1
+GCC_VER = 10.3.0
+MUSL_VER = git-master
+GMP_VER = 6.1.2
+MPC_VER = 1.1.0
+MPFR_VER = 4.0.2
+ISL_VER = 0.15
+LINUX_VER = 5.8.5
+```
+
 ---
 
 ## Not RISC-V below
