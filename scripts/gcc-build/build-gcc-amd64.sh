@@ -11,7 +11,7 @@
 # 
 debug() {
     PFX="GCC BUILD INFO"
-    printf '%s\n' "${PFX} ${@}"
+    printf '%s\n' "${PFX} ${*}"
 }
 
 debug "Starting build script for GCC Cross-Compiler"
