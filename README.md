@@ -28,7 +28,7 @@ Dependencies _(Debian)_
 - patchutils
 - bc
 
-If you have started a new GitHub Codespace Debian container, run the command below to successfully complete the build of the GNU RISC-V Toolchain.
+If you have started a new GitHub Codespace Debian container, run the command below to be able to build the GNU RISC-V Toolchain.
 
 ```bash
 sudo apt-get update -y && \
