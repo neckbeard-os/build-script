@@ -1,57 +1,67 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1073
-# shellcheck disable=SC2188 
-<<COMMENT
-# @Victor-ray, S. <victorray91@pm.me> 
-# (https://github.com/ZendaiOwl)
-
+# shellcheck disable=SC2188
+# 
+# Victor-ray, S. <12261439+ZendaiOwl@users.noreply.github.com> https://github.com/ZendaiOwl
+# 
 # Builds a cross-compiler for AMD64bit instructionset 
 # I followed this article/blog post and modified it 
 # https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
-
 # https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign - signature for the kernel
-COMMENT
-#×× DEBUG
+# 
 debug() {
-	GREENISH="$(tput setaf 46)"
-	RESET="$(tput sgr0)"
-    PFX="${GREENISH}GCC BUILD INFO${RESET} ${*}"
-    printf '%s\n' "${PFX}"
+    PFX="GCC BUILD INFO"
+    printf '%s\n' "${PFX} ${@}"
 }
 
 debug "Starting build script for GCC Cross-Compiler"
+
 ### × DIRECTORIES × ###
 BUILD_DIR="/docker/build"
 CROSS_DIR="/opt/cross"
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
 BUILD_GLIBC="$BUILD_DIR/build-glibc"
+# stuffz
+BINUTILSv="binutils-2.37"
+GCCv="gcc-10.3.0"
+KERNELv="linux-5.15.12"
+GLIBCv="glibc-2.34"
+MPFRv="mpfr-4.1.0"
+GMPv="gmp-6.2.0"
+MPCv="mpc-1.2.1"
+ISLv="isl-0.24"
+CLOOGv="cloog-0.18.1"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Creating directories" "${BUILD_DIR}" "${BUILD_GLIBC}" "${BUILD_GCC}" "${BUILD_BINUTILS}" "${CROSS_DIR}"
+debug "Creating directories: ${BUILD_DIR} ${BUILD_GLIBC} ${BUILD_GCC} ${BUILD_BINUTILS} ${CROSS_DIR}"
 mkdir -p "${BUILD_DIR}" "${CROSS_DIR}" "${BUILD_BINUTILS}" "${BUILD_GCC}" "${BUILD_GLIBC}"
+debug "Done" 
 
-debug "Created directories" "Changing directory to ${BUILD_DIR}"
+debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
+
 debug "Downloading: Binutils GCC Kernel Glibc MPFR GMP MPC ISL CLOOG"
-wget https://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.xz
-wget https://mirrors.kernel.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz
-wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.xz
-wget https://mirrors.kernel.org/gnu/glibc/glibc-2.34.tar.xz
-wget https://mirrors.kernel.org/gnu/mpfr/mpfr-4.1.0.tar.xz
+wget https://mirrors.kernel.org/gnu/binutils/${BINUTILSv}.tar.xz
+wget https://mirrors.kernel.org/gnu/gcc/gcc-10.3.0/${GCCv}.tar.xz
+wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/${KERNELv}.tar.xz
+wget https://mirrors.kernel.org/gnu/glibc/${GLIBCv}.tar.xz
+wget https://mirrors.kernel.org/gnu/mpfr/${MPFRv}.tar.xz
 # wget https://mirrors.tripadvisor.com/gnu/gmp/gmp-6.2.0.tar.bz2
-wget https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz
-wget http://mirror.us-midwest-1.nexcess.net/gnu/mpc/mpc-1.2.1.tar.gz
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/isl-0.24.tar.bz2
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
-debug "Download completed"
+wget https://gmplib.org/download/gmp/${GMPv}.tar.xz
+wget http://mirror.us-midwest-1.nexcess.net/gnu/mpc/${MPCv}.tar.gz
+wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${ISLv}.tar.bz2
+wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${CLOOGv}.tar.gz
+debug "Done"
 
 ### × [ Build Steps ] × ###
-# Extract all the source packages.
 debug "Extracting source packages.."
 for f in *.tar*; do tar xf "${f}"; done
-debug "Extracted" "Removing source packages.."
+debug "Done"
+
+debug "Removing source packages.."
 for f in *.tar*; do rm "${f}"; done
-debug "Removed"
+debug "Done"
+
 ### × VARIABLES × ###
 BINUTILS="${BUILD_DIR}/binutils-2.37"
 GCC="${BUILD_DIR}/gcc-10.3.0"
@@ -71,19 +81,25 @@ HOST="amd64-linux"
 # Create symbolic links from the GCC directory to some of the other directories. 
 # These five packages are dependencies of GCC, and when the symbolic links are present, 
 # GCC’s build script will build them automatically.
-debug "Changing directory to $BUILD_DIR"
-cd "$GCC" || exit 1
-debug "Creating symbolic links" "Symlink: mpfr"
+
+debug "Changing directory to ${GCC}"
+cd "${GCC}" || exit 1
+
+debug "Creating symbolic links"
+
+debug "MPFR"
 ln -s ../mpfr-4.1.0 mpfr
-debug "Symlink: gmp"
+debug "GMP"
 ln -s ../gmp-6.2.0 gmp
-debug "Symlink: mpc"
+debug "MPC"
 ln -s ../mpc-1.2.1 mpc
-debug "Symlink: isl"
+debug "ISL"
 ln -s ../isl-0.24 isl
-debug "Symlink: cloog"
+debug "CLOOG"
 ln -s ../cloog-0.18.1 cloog
-debug "Symlinks created" "Changing directory to $BUILD_DIR"
+debug "Done"
+
+debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 
 # Choose an installation directory, and make sure you have write permission to it. 
@@ -99,59 +115,84 @@ export PATH="/opt/cross/bin:$PATH"
 # Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
 
 # Build linux kernel headers
-debug "Build: Linux Kernel Headers" "Changing working directory to ${KERNEL}"
+debug "Changing working directory to ${KERNEL}"
 cd "${KERNEL}" || exit 1
+
+debug "Linux kernel headers"
 make ARCH="$ARCH" INSTALL_HDR_PATH="${CROSS_DIR}/${TARGET}" headers_install
-debug "Linux Kernel Headers - Done" "Changing working directory to $BUILD_DIR"
+debug "Done"
+
+debug "Changing working directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 
 # Build Binutils
-debug "Build: Binutils" "Changing working directory to $BUILD_DIR"
+debug "Changing working directory to ${BUILD_BINUTILS}"
 cd "${BUILD_BINUTILS}" || exit 1
+
+debug "Binutils"
 "${BINUTILS}"/configure --prefix="${CROSS_DIR}" --target="${TARGET}" --disable-multilib
 make -j4
 make install
-debug "Binutils - Done"
-debug "Changing working directory to $BUILD_DIR"
+debug "Done"
+
+debug "Changing working directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 
 # Build GCC's C & C++ cross-compilers to /opt/cross/bin
-debug "Build GCC's C & C++ cross-compilers to /opt/cross/bin" "Changing directory to $BUILD_GCC"
-cd "$BUILD_GCC" || exit 1
+debug "Changing directory to ${BUILD_GCC}"
+cd "${BUILD_GCC}" || exit 1
+
+debug "Build GCC's C & C++ cross-compilers to /opt/cross/bin"
 "${GCC}"/configure --prefix="${CROSS_DIR}" --target="${TARGET}" --enable-languages=c,c++ --disable-multilib
 make -j4 all-gcc
 make install-gcc
-debug "Build GCC's C & C++ cross-compilers to /opt/cross/bin" "Changing directory to $BUILD_DIR"
+debug "Done"
+
+debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 
 # Install glibc's standard C library headers to /opt/cross/amd64-linux/include
-debug "Install glibc's standard C library to /opt/cross/${HOST}" "Changing directory to $BUILD_GLIBC"
+debug "Changing directory to ${BUILD_GLIBC}"
 cd "${BUILD_GLIBC}" || exit 1
+
+debug "Install glibc's standard C library to /opt/cross/${HOST}"
 # cd "$BUILD_MUSL"
 "${GLIBC}"/configure --prefix="${CROSS_DIR}/${TARGET}" --build="${MACHTYPE}" --host="${HOST}" --target="${TARGET}" --with-headers="${CROSS_DIR}/${TARGET}/include" --disable-multilib libc_cv_forced_unwind=yes
 make install-bootstrap-headers=yes install-headers
 make -j4 csu/subdir_lib
-install csu/crt1.o csu/crti.o csu/crtn.o "$CROSS_DIR/$TARGET/lib"
+install csu/crt1.o csu/crti.o csu/crtn.o "${CROSS_DIR}/${TARGET}/lib"
 amd64-linux-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "${CROSS_DIR}/${TARGET}/lib/libc.so"
 touch "${CROSS_DIR}/${TARGET}/include/gnu/stubs.h"
-debug "Install glibc's standard C library to /opt/cross/amd64-linux" "Changing directory to $BUILD_DIR"
-cd "$BUILD_DIR" || exit 1
+debug "Done"
+
+debug "Changing directory to ${BUILD_DIR}"
+cd "${BUILD_DIR}" || exit 1
 
 # Compiler support library
-debug "Install compiler support library" "Changing directory to $BUILD_GCC"
-cd "$BUILD_GCC" || exit 1
+debug "Changing directory to ${BUILD_GCC}"
+cd "${BUILD_GCC}" || exit 1
+
+debug "Install compiler support library"
 make -j4 all-target-libgcc
 make install-target-libgcc
-debug "Install compiler support library" "Changing directory to $BUILD_DIR"
-cd "$BUILD_DIR" || exit 1
+debug "Done"
+
+debug "Changing directory to ${BUILD_DIR}"
+cd "${BUILD_DIR}" || exit 1
 
 # Standard C library
-debug "Install GCC Standard C library" "Changing directory to $BUILD_GCC"
-cd "$BUILD_GCC" || exit 1
+debug "Changing directory to ${BUILD_GCC}"
+cd "${BUILD_GCC}" || exit 1
+
+debug "Install GCC Standard C library"
 make -j4
 make install
-debug "Install GCC Standard C library" "Changing directory to $BUILD_DIR"
-cd "$BUILD_DIR" || exit 1
-debug "Build GCC - Done"
+debug "Done"
+
+debug "Changing directory to ${BUILD_DIR}"
+cd "${BUILD_DIR}" || exit 1
+debug "Done"
+
+debug "GCC Build has completed"
 
 exit 0
