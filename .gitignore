@@ -1,4 +1,5 @@
 RISC-V/build
+RISC-V/output
 RISC-V/riscv-gnu-toolchain
 RISC-V/riscv
 CMakeLists.txt.user
