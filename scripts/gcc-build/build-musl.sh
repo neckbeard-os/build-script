@@ -10,8 +10,8 @@ This is the second generation of musl-cross-make, a fast, simple, but advanced m
 COMMENT
 #×× DEBUG
 debug() {
-    PFX="INFO ${*}"
-    printf '%s\n' "${PFX}"
+    PFX="INFO"
+    printf '%s\n' "${PFX} ${@}"
 }
 #×× VARIABLES 
 BUILD_DIR=/build
@@ -31,7 +31,7 @@ cp "/docker/scripts/gcc-build/config.mak" "${MUSL_DIR}"
 debug "Changing directory to ${MUSL_DIR}"
 cd "${MUSL_DIR}" || exit 1
 debug "Changing isl mirror site to a responsive server"
-sed -i 's/ISL_SITE = http:\/\/isl.gforge.inria.fr\//ISL_SITE = https:\/\/gcc.gnu.org\/pub\/gcc\/infrastructure\//g' "./Makefile"
+sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "./Makefile"
 # The available target architectures
 # The currently set one is x84_64-linux-musl, use sed -i and change it in config.mak before copying it
 # i486="TARGET = i486-linux-musl"
@@ -41,8 +41,8 @@ sed -i 's/ISL_SITE = http:\/\/isl.gforge.inria.fr\//ISL_SITE = https:\/\/gcc.gnu
 # sh2eb="TARGET = sh2eb-linux-muslfdpic"
 debug "Setting architecture"
 #shellcheck disable=SC2016
-sed -i 's/#TARGET = arm-linux-musleabi/TARGET = arm-linux-musleabi/' "./config.mak"
-# sed -i 's/#TARGET = x86_64-linux-musl/TARGET = x86_64-linux-musl/' "./config.mak"
+# sed -i 's/#TARGET = arm-linux-musleabi/TARGET = arm-linux-musleabi/' "./config.mak"
+sed -i 's/#TARGET = x86_64-linux-musl/TARGET = x86_64-linux-musl/' "./config.mak"
 debug "Make musl cross-compiler"
 make
 debug "Completed Musl Cross-Compiler!"
