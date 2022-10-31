@@ -12,17 +12,18 @@ debug() {
     printf '%s\n' "${PFX} ${*}"
 }
 # × × VARIABLES × × #
-BUILD_DIR="$(pwd)/build"
-OUTPUT_DIR="$(pwd)/output"
-# CROSS_DIR="/opt/cross"
-CONFIGF="$(pwd)/config.mak"
+CURRENT_DIR="$(pwd)"
+BUILD_DIR="${CURRENT_DIR}/build"
+OUTPUT_DIR="${CURRENT_DIR}/output"
+CROSS_DIR="${CURRENT_DIR}/cross"
+CONFIGF="${CURRENT_DIR}/config.mak"
 MUSL_DIR="${BUILD_DIR}/musl-cross-make"
 GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-#trap 'sudo rm -R ${BUILD_DIR}; sudo rm -R ${OUTPUT_DIR}' exit
+# trap 'sudo rm -R ${BUILD_DIR}; sudo rm -R ${OUTPUT_DIR}; sudo rm -R ${CROSS_DIR}' exit
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-debug "Creating ${BUILD_DIR} & ${OUTPUT_DIR}"
-mkdir -p "${BUILD_DIR}" "${OUTPUT_DIR}"
+debug "Creating ${BUILD_DIR} & ${OUTPUT_DIR} ${CROSS_DIR}"
+mkdir -p "${BUILD_DIR}" "${OUTPUT_DIR}" "${CROSS_DIR}"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
@@ -39,15 +40,9 @@ cd "${MUSL_DIR}" || exit 1
 debug "Changing ISL mirror site to a responsive server"
 sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "./Makefile"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-# The available target architectures
-# The currently set one is x84_64-linux-musl, use sed -i and change it in config.mak before copying it
-# i486="TARGET = i486-linux-musl"
-# x64="TARGET = x86_64-linux-musl"
-# armeabi="TARGET = arm-linux-musleabi"
-# armeabihf"TARGET = arm-linux-musleabihf"
-# sh2eb="TARGET = sh2eb-linux-muslfdpic"
-# riscv64="TARGET = riscv64-linux-musl"
-# × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
+# To compile, run make. To install to $(OUTPUT), run make install.
+# The default value for $(OUTPUT) is output
+# After installing here you can move the cross compiler toolchain to another location as desired.
 debug "Make musl-cross-compiler"
 make
 debug "Done"
