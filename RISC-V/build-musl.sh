@@ -20,7 +20,7 @@ CONFIGF="${CURRENT_DIR}/config.mak"
 MUSL_DIR="${BUILD_DIR}/musl-cross-make"
 GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-# trap 'sudo rm -R ${BUILD_DIR}; sudo rm -R ${OUTPUT_DIR}; sudo rm -R ${CROSS_DIR}' exit
+# trap 'cd {CURRENT_DIR}; sudo rm -R ${BUILD_DIR}; sudo rm -R ${OUTPUT_DIR}; sudo rm -R ${CROSS_DIR}' exit
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Creating ${BUILD_DIR} & ${OUTPUT_DIR} ${CROSS_DIR}"
 mkdir -p "${BUILD_DIR}" "${OUTPUT_DIR}" "${CROSS_DIR}"
