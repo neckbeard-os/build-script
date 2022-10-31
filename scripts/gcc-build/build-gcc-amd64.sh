@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
+#
 # shellcheck disable=SC1073
 # shellcheck disable=SC2188
 # 
 # Victor-ray, S. <12261439+ZendaiOwl@users.noreply.github.com> https://github.com/ZendaiOwl
 # 
-# Builds a cross-compiler for AMD 64bit CPU instructionset 
+# Builds a cross-compiler for AMD 64bit CPU instructionset
+#
 # I followed this article/blog post and modified it 
 # https://preshing.com/20141119/how-to-build-a-gcc-cross-compiler/
-# https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign - signature for the kernel
+#
+# Signature for the kernel
+# https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign
 # 
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug() {
@@ -17,8 +21,10 @@ debug() {
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Starting build script for GCC Cross-Compiler"
 # × × × DIRECTORIES × × × #
-BUILD_DIR="/docker/build"
-CROSS_DIR="/opt/cross"
+# BUILD_DIR="/docker/build"
+#CROSS_DIR="/opt/cross"
+BUILD_DIR="./build"
+CROSS_DIR="./cross"
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
 BUILD_GLIBC="$BUILD_DIR/build-glibc"
@@ -32,6 +38,20 @@ GMPv="gmp-6.2.0"
 MPCv="mpc-1.2.1"
 ISLv="isl-0.24"
 CLOOGv="cloog-0.18.1"
+# × × × VARIABLES × × × #
+BINUTILS="${BUILD_DIR}/${BINUTILSv}"
+GCC="${BUILD_DIR}/${GCCv}"
+KERNEL="${BUILD_DIR}/${KERNELv}"
+GLIBC="${BUILD_DIR}/${GLIBCv}"
+# MPFR="${BUILD_DIR}/mpfr-4.1.0"
+# GMP="BUILD_DIR}/gmp-6.2.0"
+# MPC="$BUILD_DIR}/mpc-1.2.1"
+# ISL="${BUILD_DIR}/isl-0.24"
+# CLOOG="${BUILD_DIR}/cloog-0.18.1"
+ARCH="x86_x64"
+TARGET="amd64-linux"
+# WMUSL=""
+HOST="amd64-linux"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Creating directories: ${BUILD_DIR} ${BUILD_GLIBC} ${BUILD_GCC} ${BUILD_BINUTILS} ${CROSS_DIR}"
 mkdir -p "${BUILD_DIR}" "${CROSS_DIR}" "${BUILD_BINUTILS}" "${BUILD_GCC}" "${BUILD_GLIBC}"
@@ -41,15 +61,15 @@ debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Downloading: Binutils GCC Kernel Glibc MPFR GMP MPC ISL CLOOG"
-wget https://mirrors.kernel.org/gnu/binutils/${BINUTILSv}.tar.xz
-wget https://mirrors.kernel.org/gnu/gcc/gcc-10.3.0/${GCCv}.tar.xz
-wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/${KERNELv}.tar.xz
-wget https://mirrors.kernel.org/gnu/glibc/${GLIBCv}.tar.xz
-wget https://mirrors.kernel.org/gnu/mpfr/${MPFRv}.tar.xz
-wget https://gmplib.org/download/gmp/${GMPv}.tar.xz
-wget http://mirror.us-midwest-1.nexcess.net/gnu/mpc/${MPCv}.tar.gz
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${ISLv}.tar.bz2
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${CLOOGv}.tar.gz
+wget "https://mirrors.kernel.org/gnu/binutils/${BINUTILSv}.tar.xz"
+wget "https://mirrors.kernel.org/gnu/gcc/${GCCv}/${GCCv}.tar.xz"
+wget "https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/${KERNELv}.tar.xz"
+wget "https://mirrors.kernel.org/gnu/glibc/${GLIBCv}.tar.xz"
+wget "https://mirrors.kernel.org/gnu/mpfr/${MPFRv}.tar.xz"
+wget "https://gmplib.org/download/gmp/${GMPv}.tar.xz"
+wget "http://mirror.us-midwest-1.nexcess.net/gnu/mpc/${MPCv}.tar.gz"
+wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${ISLv}.tar.bz2"
+wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${CLOOGv}.tar.gz"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 ### × [ Build Steps ] × ###
@@ -61,21 +81,6 @@ debug "Removing source packages.."
 for f in *.tar*; do rm "${f}"; done
 debug "Done"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
-### × VARIABLES × ###
-BINUTILS="${BUILD_DIR}/binutils-2.37"
-GCC="${BUILD_DIR}/gcc-10.3.0"
-KERNEL="${BUILD_DIR}/linux-5.15.12"
-GLIBC="${BUILD_DIR}/glibc-2.34"
-# MPFR="${BUILD_DIR}/mpfr-4.1.0"
-# GMP="BUILD_DIR}/gmp-6.2.0"
-# MPC="$BUILD_DIR}/mpc-1.2.1"
-# ISL="${BUILD_DIR}/isl-0.24"
-# CLOOG="${BUILD_DIR}/cloog-0.18.1"
-ARCH="x86_x64"
-TARGET="amd64-linux"
-# WMUSL=""
-HOST="amd64-linux"
-# × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 ### × SYMLINKS × ###
 # Create symbolic links from the GCC directory to some of the other directories. 
 # These five packages are dependencies of GCC, and when the symbolic links are present, 
@@ -86,15 +91,15 @@ cd "${GCC}" || exit 1
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Creating symbolic links"
 debug "MPFR"
-ln -s ../mpfr-4.1.0 mpfr
+ln -s ../"${MPFRv}" mpfr
 debug "GMP"
-ln -s ../gmp-6.2.0 gmp
+ln -s ../"${GMPv}" gmp
 debug "MPC"
-ln -s ../mpc-1.2.1 mpc
+ln -s ../"${MPCv}" mpc
 debug "ISL"
-ln -s ../isl-0.24 isl
+ln -s ../"${ISLv}" isl
 debug "CLOOG"
-ln -s ../cloog-0.18.1 cloog
+ln -s ../"${CLOOGv}" cloog
 debug "Done"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 debug "Changing directory to ${BUILD_DIR}"
@@ -104,8 +109,8 @@ cd "${BUILD_DIR}" || exit 1
 # In the steps that follow, I’ll install the new toolchain to /opt/cross.
 # Throughout the entire build process, make sure the installation’s bin subdirectory is in your PATH environment variable. 
 # You can remove this directory from your PATH later, but most of the build steps expect to find aarch64-linux-gcc and other host tools via the PATH by default.
-debug "Exporting /opt/cross/bin to PATH"
-export PATH="/opt/cross/bin:$PATH"
+debug "Exporting ${CROSS_DIR}/bin to PATH"
+export PATH="${CROSS_DIR}/bin:$PATH"
 # × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × × #
 # Pay particular attention to the stuff that gets installed under /opt/cross/aarch64-linux/. 
 # This directory is considered the system root of an imaginary AArch64 Linux target system. 
