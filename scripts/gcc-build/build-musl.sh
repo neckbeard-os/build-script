@@ -18,38 +18,51 @@ GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
 # arm-linux-musleabihf
 # sh2eb-linux-muslfdpic
 TARGET="arm-linux-musleabi"
-OUTPUT="/opt/cross"
+CONF="./config.mak"
 CURRENT_DIR="$(pwd)"
-BUILD_DIR="${CURRENT_DIR}/build"
+OUTPUT="${CURRENT_DIR}/cross"
 CONFIGF="${CURRENT_DIR}/config.mak"
+BUILD_DIR="${CURRENT_DIR}/build"
 MUSL_DIR="${BUILD_DIR}/musl-cross-make"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Creating ${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}"
+debug "Creating $BUILD_DIR"
+mkdir -p "$BUILD_DIR"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Changing directory to ${BUILD_DIR}"
-cd "${BUILD_DIR}" || exit 1
+debug "Changing directory to $BUILD_DIR"
+cd "$BUILD_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 debug "Cloning musl-cross-make"
-git clone "${GIT_REPO_MUSL}"
+git clone "$GIT_REPO_MUSL"
 # × × × × × × × × × × × × × × × × × × #
-debug "Copying ${CONFIGF} to ${BUILD_DIR}/musl-cross-make"
-cp "${CONFIGF}" "${MUSL_DIR}"
+debug "Copying $CONFIGF to ${BUILD_DIR}/musl-cross-make"
+cp "$CONFIGF" "$MUSL_DIR"
 # × × × × × × × × × × × × × × × × × × #
-debug "Changing directory to ${MUSL_DIR}"
-cd "${MUSL_DIR}" || exit 1
+debug "Changing directory to $MUSL_DIR"
+cd "$MUSL_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 debug "Changing ISL mirror site to a responsive server"
 sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "./Makefile"
 # × × × × × × × × × × × × × × × × × × #
-debug "Setting target architecture to ${TARGET}"
+debug "Setting target architecture to $TARGET"
 #shellcheck disable=SC2016
-sed -i '31a TARGET = '"${TARGET}"'' "./config.mak"
-debug "Setting output directory to ${OUTPUT}"
-sed -i '32a OUTPUT = '"${OUTPUT}"'' "./config.mak"
+sed -i '31a TARGET = '"$TARGET"'' "$CONF"
+debug "Setting output directory to $OUTPUT"
+sed -i '32a OUTPUT = '"$OUTPUT"'' "$CONF"
 # × × × × × × × × × × × × × × × × × × #
 debug "Make musl-cross-compiler"
 make
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
+debug "Install musl-cross-compiler to $OUTPUT"
+make install
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
+debug "Return to the starting directory"
+cd "$CURRENT_DIR" || exit 1
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
+debug "Removing musl-cross-make repository directory"
+sudo rm -R "$MUSL_DIR"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
 exit 0
