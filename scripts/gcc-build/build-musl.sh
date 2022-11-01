@@ -11,6 +11,12 @@ debug() {
 }
 # × × VARIABLES × × #
 GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
+# Some of the available target architectures
+# i486-linux-musl
+# x86_64-linux-musl
+# arm-linux-musleabi
+# arm-linux-musleabihf
+# sh2eb-linux-muslfdpic
 TARGET="arm-linux-musleabi"
 OUTPUT="/opt/cross"
 CURRENT_DIR="$(pwd)"
@@ -35,13 +41,6 @@ cd "${MUSL_DIR}" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 debug "Changing ISL mirror site to a responsive server"
 sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "./Makefile"
-# The available target architectures
-# The currently set one is x84_64-linux-musl, use sed -i and change it in config.mak before copying it
-# TARGET = i486-linux-musl
-# TARGET = x86_64-linux-musl
-# TARGET = arm-linux-musleabi
-# TARGET = arm-linux-musleabihf
-# TARGET = sh2eb-linux-muslfdpic
 # × × × × × × × × × × × × × × × × × × #
 debug "Setting target architecture to ${TARGET}"
 #shellcheck disable=SC2016
