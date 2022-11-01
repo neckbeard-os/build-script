@@ -8,7 +8,7 @@
 # There is no default TARGET; you must select one here or on the make
 # command line. Some examples:
 # TARGET = i486-linux-musl
-TARGET = x86_64-linux-musl
+# TARGET = x86_64-linux-musl
 # TARGET = arm-linux-musleabi
 # TARGET = arm-linux-musleabihf
 # TARGET = sh2eb-linux-muslfdpic
@@ -17,7 +17,7 @@ TARGET = x86_64-linux-musl
 # musl-cross-make directory and can later be moved wherever you want them.
 # To install directly to a specific location, set it here. Multiple targets
 # can safely be installed in the same location. Some examples:
-OUTPUT = /opt/cross
+# OUTPUT = /opt/cross
 # OUTPUT = /usr/local
 
 # By default, latest supported release versions of musl and the toolchain
