@@ -16,11 +16,33 @@ debug() {
 set -euo pipefail
 debug "Starting build script for GCC Cross-Compiler"
 ### × DIRECTORIES × ###
-BUILD_DIR="/docker/build"
+BUILD_DIR="/build"
 CROSS_DIR="/opt/cross"
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
 BUILD_GLIBC="${BUILD_DIR}/build-glibc"
+BINUTILS="${BUILD_DIR}/binutils-2.37"
+GCC="${BUILD_DIR}/gcc-10.3.0"
+KERNEL="${BUILD_DIR}/linux-5.15.12"
+GLIBC="${BUILD_DIR}/glibc-2.34"
+# × × × × × × × × × × × × × × × × × × # 
+### × VARIABLES × ###
+BINUTILSv="binutils-2.37"
+GCCv="gcc-10.3.0"
+KERNELv="linux-5.15.12"
+GLIBCv="glibc-2.34"
+MPFRv="mpfr-4.1.0"
+GMPv="gmp-6.2.0"
+MPCv="mpc-1.2.1"
+ISLv="isl-0.24"
+CLOOGv="cloog-0.18.1"
+#ARCH="x86_x64"
+#TARGET="amd64-linux"
+#HOST="amd64-linux"
+ARCH="arm64"
+TARGET="aarch64-linux"
+HOST="aarch64-linux"
+# WMUSL=""
 # × × × × × × × × × × × × × × × × × × # 
 debug "Creating directories: ${BUILD_DIR} ${CROSS_DIR} ${BUILD_BINUTILS} ${BUILD_GCC} ${BUILD_GLIBC}"
 mkdir -p "${BUILD_DIR}" "${CROSS_DIR}" "${BUILD_BINUTILS}" "${BUILD_GCC}" "${BUILD_GLIBC}"
@@ -31,45 +53,26 @@ debug "Changing directory to ${BUILD_DIR}"
 cd "${BUILD_DIR}" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Download: BINUTILS GCC KERNEL GLIBC MPFR GMP MPC ISL CLOOG"
-wget https://mirrors.kernel.org/gnu/binutils/binutils-2.37.tar.xz || exit 1
-wget https://mirrors.kernel.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz || exit 1
-wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.xz || exit 1
-wget https://mirrors.kernel.org/gnu/glibc/glibc-2.34.tar.xz || exit 1
-wget https://mirrors.kernel.org/gnu/mpfr/mpfr-4.1.0.tar.xz || exit 1
-# wget https://mirrors.tripadvisor.com/gnu/gmp/gmp-6.2.0.tar.bz2 || exit 1
-wget https://gmplib.org/download/gmp/gmp-6.2.0.tar.xz || exit 1
-wget http://mirror.us-midwest-1.nexcess.net/gnu/mpc/mpc-1.2.1.tar.gz || exit 1
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/isl-0.24.tar.bz2 || exit 1
-wget https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz || exit 1
+wget "https://mirrors.kernel.org/gnu/binutils/${BINUTILSv}.tar.xz" || exit 1
+wget "https://mirrors.kernel.org/gnu/gcc/${GCCv}/${GCCv}.tar.xz" || exit 1
+wget "https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/${KERNELv}.tar.xz" || exit 1
+wget "https://mirrors.kernel.org/gnu/glibc/${GLIBCv}.tar.xz" || exit 1
+wget "https://mirrors.kernel.org/gnu/mpfr/${MPFRv}.tar.xz" || exit 1
+wget "https://gmplib.org/download/gmp/${GMPv}.tar.xz" || exit 1
+wget "http://mirror.us-midwest-1.nexcess.net/gnu/mpc/${MPCv}.tar.gz" || exit 1
+wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${ISLv}.tar.bz2" || exit 1
+wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${CLOOGv}.tar.gz" || exit 1
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
-### × [ Build Steps ] × ###
+# × × × Build Steps × × × #
 # Extract all the source packages.
-debug "Extract source packages"
+debug "Extract source packages from tar archive"
 for f in *.tar*; do tar xf "${f}"; done
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Remove source packages"
+debug "Remove tar archives"
 for f in *.tar*; do rm "${f}"; done
 debug "Done"
-# × × × × × × × × × × × × × × × × × × # 
-### × VARIABLES × ###
-BINUTILS="${BUILD_DIR}/binutils-2.37"
-GCC="${BUILD_DIR}/gcc-10.3.0"
-KERNEL="${BUILD_DIR}/linux-5.15.12"
-GLIBC="${BUILD_DIR}/glibc-2.34"
-# MPFR="${BUILD_DIR}/mpfr-4.1.0"
-# GMP="BUILD_DIR}/gmp-6.2.0"
-# MPC="$BUILD_DIR}/mpc-1.2.1"
-# ISL="${BUILD_DIR}/isl-0.24"
-# CLOOG="${BUILD_DIR}/cloog-0.18.1"
-#ARCH="x86_x64"
-#TARGET="amd64-linux"
-#HOST="amd64-linux"
-ARCH="arm64"
-TARGET="aarch64-linux"
-HOST="aarch64-linux"
-# WMUSL=""
 # × × × × × × × × × × × × × × × #
 ### × SYMLINKS × ###
 # Create symbolic links from the GCC directory to some of the other directories. 
@@ -80,20 +83,15 @@ cd "$GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Creating symbolic links"
 debug "MPFR"
-ln -s ../mpfr-4.1.0 mpfr
-# ln -s "$MPFR" mpfr
+ln -s ../"${MPFRv}" mpfr
 debug "GMP"
-ln -s ../gmp-6.2.0 gmp
-# ln -s "$GMP" gmp
+ln -s ../"${GMPv}" gmp
 debug "MPC"
-ln -s ../mpc-1.2.1 mpc
-# ln -s "$MPC" mpc
+ln -s ../"${MPCv}" mpc
 debug "ISL"
-ln -s ../isl-0.24 isl
-# ln -s "$ISL" isl
+ln -s ../"${ISLv}" isl
 debug "CLOOG"
-ln -s ../cloog-0.18.1 cloog
-# ln -s "$CLOOG" cloog
+ln -s ../"${CLOOGv}" cloog
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_DIR"
@@ -111,8 +109,8 @@ A self-hosted AArch64 Linux compiler could, in theory, use all the headers and l
 Obviously, none of the programs built for the host system, such as the cross-compiler itself, will be installed to this directory.
 COMMENT
 # × × × × × × × × × × × × × × × × × × # 
-debug "Exporting /opt/cross/bin to PATH"
-export PATH="/opt/cross/bin:$PATH"
+debug "Exporting ${CROSS_DIR}/bin to PATH"
+export PATH="${CROSS_DIR}/bin:$PATH"
 # × × × × × × × × × × × × × × × × × × # 
 <<COMMENT
 Build linux kernel headers
@@ -157,7 +155,7 @@ debug "Changing directory to $BUILD_GCC"
 cd "$BUILD_GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 # Build GCC's C & C++ cross-compilers to /opt/cross/bin
-debug "Build GCC's C & C++ cross-compilers to /opt/cross/bin"
+debug "Build GCC's C & C++ cross-compilers to $CROSS_DIR"
 "${GCC}"/configure --prefix="${CROSS_DIR}" --target="${TARGET}" --enable-languages=c,c++ --disable-multilib
 make -j4 all-gcc
 make install-gcc
@@ -178,7 +176,7 @@ make -j4 csu/subdir_lib
 install csu/crt1.o csu/crti.o csu/crtn.o "${CROSS_DIR}/${TARGET}/lib"
 "${TARGET}"-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "${CROSS_DIR}/${TARGET}/lib/libc.so"
 touch "${CROSS_DIR}/${TARGET}/include/gnu/stubs.h"
-debug "Install glibc's standard C library to /opt/cross/${TARGET}"
+debug "Install glibc's standard C library to ${CROSS_DIR}/${TARGET}"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
