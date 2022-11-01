@@ -15,18 +15,8 @@ debug() {
 }
 set -euo pipefail
 debug "Starting build script for GCC Cross-Compiler"
-### × DIRECTORIES × ###
-BUILD_DIR="/build"
-CROSS_DIR="/opt/cross"
-BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
-BUILD_GCC="${BUILD_DIR}/gcc-build"
-BUILD_GLIBC="${BUILD_DIR}/build-glibc"
-BINUTILS="${BUILD_DIR}/binutils-2.37"
-GCC="${BUILD_DIR}/gcc-10.3.0"
-KERNEL="${BUILD_DIR}/linux-5.15.12"
-GLIBC="${BUILD_DIR}/glibc-2.34"
 # × × × × × × × × × × × × × × × × × × # 
-### × VARIABLES × ###
+# × × × VARIABLES × × × #
 BINUTILSv="binutils-2.37"
 GCCv="gcc-10.3.0"
 KERNELv="linux-5.15.12"
@@ -42,14 +32,24 @@ CLOOGv="cloog-0.18.1"
 ARCH="arm64"
 TARGET="aarch64-linux"
 HOST="aarch64-linux"
-# WMUSL=""
+# × × × DIRECTORIES × × × #
+CURRENT_DIR="$(pwd)"
+BUILD_DIR="${CURRENT_DIR}/build"
+CROSS_DIR="${CURRENT_DIR}/cross"
+BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
+BUILD_GCC="${BUILD_DIR}/build-gcc"
+BUILD_GLIBC="${BUILD_DIR}/build-glibc"
+# × × × × × × × × × × × × × × × × × × #
+BINUTILS="${BUILD_DIR}/${BINUTILSv}"
+GCC="${BUILD_DIR}/${GCCv}"
+KERNEL="${BUILD_DIR}/${KERNELv}"
+GLIBC="${BUILD_DIR}/${GLIBCv}"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Creating directories: ${BUILD_DIR} ${CROSS_DIR} ${BUILD_BINUTILS} ${BUILD_GCC} ${BUILD_GLIBC}"
 mkdir -p "${BUILD_DIR}" "${CROSS_DIR}" "${BUILD_BINUTILS}" "${BUILD_GCC}" "${BUILD_GLIBC}"
-# chown "$(whoami)" "${CROSS_DIR}"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Changing directory to ${BUILD_DIR}"
+debug "Changing directory to $BUILD_DIR"
 cd "${BUILD_DIR}" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Download: BINUTILS GCC KERNEL GLIBC MPFR GMP MPC ISL CLOOG"
@@ -70,7 +70,7 @@ debug "Extract source packages from tar archive"
 for f in *.tar*; do tar xf "${f}"; done
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Remove tar archives"
+debug "Remove source packages tar archive"
 for f in *.tar*; do rm "${f}"; done
 debug "Done"
 # × × × × × × × × × × × × × × × #
@@ -83,15 +83,15 @@ cd "$GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Creating symbolic links"
 debug "MPFR"
-ln -s ../"${MPFRv}" mpfr
+ln -s ../"$MPFRv" mpfr
 debug "GMP"
-ln -s ../"${GMPv}" gmp
+ln -s ../"$GMPv" gmp
 debug "MPC"
-ln -s ../"${MPCv}" mpc
+ln -s ../"$MPCv" mpc
 debug "ISL"
-ln -s ../"${ISLv}" isl
+ln -s ../"$ISLv" isl
 debug "CLOOG"
-ln -s ../"${CLOOGv}" cloog
+ln -s ../"$CLOOGv" cloog
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_DIR"
@@ -156,7 +156,7 @@ cd "$BUILD_GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 # Build GCC's C & C++ cross-compilers to /opt/cross/bin
 debug "Build GCC's C & C++ cross-compilers to $CROSS_DIR"
-"${GCC}"/configure --prefix="${CROSS_DIR}" --target="${TARGET}" --enable-languages=c,c++ --disable-multilib
+"$GCC"/configure --prefix="$CROSS_DIR" --target="$TARGET" --enable-languages=c,c++ --disable-multilib
 make -j4 all-gcc
 make install-gcc
 debug "Done"
@@ -170,11 +170,11 @@ cd "$BUILD_GLIBC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 # Install glibc's standard C library headers to /opt/cross/amd64-linux/include
 debug "Install glibc's standard C library to /opt/cross/${HOST}"
-"${GLIBC}"/configure --prefix="${CROSS_DIR}/${TARGET}" --build="${MACHTYPE}" --host="${HOST}" --target="${TARGET}" --with-headers="${CROSS_DIR}/${TARGET}/include" --disable-multilib libc_cv_forced_unwind=yes
+"$GLIBC"/configure --prefix="${CROSS_DIR}/${TARGET}" --build="$MACHTYPE" --host="$HOST" --target="$TARGET" --with-headers="${CROSS_DIR}/${TARGET}/include" --disable-multilib libc_cv_forced_unwind=yes
 make install-bootstrap-headers=yes install-headers
 make -j4 csu/subdir_lib
 install csu/crt1.o csu/crti.o csu/crtn.o "${CROSS_DIR}/${TARGET}/lib"
-"${TARGET}"-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "${CROSS_DIR}/${TARGET}/lib/libc.so"
+"$TARGET"-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "${CROSS_DIR}/${TARGET}/lib/libc.so"
 touch "${CROSS_DIR}/${TARGET}/include/gnu/stubs.h"
 debug "Install glibc's standard C library to ${CROSS_DIR}/${TARGET}"
 # × × × × × × × × × × × × × × × × × × # 
@@ -205,7 +205,11 @@ debug "Done"
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
 debug "Done"
-# × × × × × × × × × × × × × × × × × × # 
+# × × × × × × × × × × × × × × × × × × #
+debug "Changing directory to $CURRENT_DIR"
+cd "$CURRENT_DIR" || exit 1
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
 debug "Completed"
 
 exit 0
