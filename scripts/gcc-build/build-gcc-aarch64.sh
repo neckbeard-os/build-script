@@ -10,7 +10,7 @@
 # https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.15.12.tar.sign - signature for the kernel
 # 
 debug() {
-    PFX="GCC BUILD INFO"
+    PFX="INFO"
     printf '%s\n' "${PFX} ${*}"
 }
 set -euo pipefail
@@ -45,12 +45,12 @@ GCC="${BUILD_DIR}/${GCCv}"
 KERNEL="${BUILD_DIR}/${KERNELv}"
 GLIBC="${BUILD_DIR}/${GLIBCv}"
 # × × × × × × × × × × × × × × × × × × # 
-debug "Creating directories: ${BUILD_DIR} ${CROSS_DIR} ${BUILD_BINUTILS} ${BUILD_GCC} ${BUILD_GLIBC}"
-mkdir -p "${BUILD_DIR}" "${CROSS_DIR}" "${BUILD_BINUTILS}" "${BUILD_GCC}" "${BUILD_GLIBC}"
+debug "Creating directories: $BUILD_DIR $CROSS_DIR $BUILD_BINUTILS $BUILD_GCC $BUILD_GLIBC"
+mkdir -p "$BUILD_DIR" "$CROSS_DIR" "$BUILD_BINUTILS" "$BUILD_GCC" "$BUILD_GLIBC"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_DIR"
-cd "${BUILD_DIR}" || exit 1
+cd "$BUILD_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Download: BINUTILS GCC KERNEL GLIBC MPFR GMP MPC ISL CLOOG"
 wget "https://mirrors.kernel.org/gnu/binutils/${BINUTILSv}.tar.xz" || exit 1
@@ -64,17 +64,16 @@ wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastr
 wget "https://ftp.mpi-inf.mpg.de/mirrors/gnu/mirror/gcc.gnu.org/pub/gcc/infrastructure/${CLOOGv}.tar.gz" || exit 1
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
-# × × × Build Steps × × × #
-# Extract all the source packages.
+# × × × Build × × × #
 debug "Extract source packages from tar archive"
-for f in *.tar*; do tar xf "${f}"; done
+for f in *.tar*; do tar xf "$f"; done
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Remove source packages tar archive"
-for f in *.tar*; do rm "${f}"; done
+for f in *.tar*; do rm "$f"; done
 debug "Done"
 # × × × × × × × × × × × × × × × #
-### × SYMLINKS × ###
+# × × × SYMLINKS × × × #
 # Create symbolic links from the GCC directory to some of the other directories. 
 # These five packages are dependencies of GCC, and when the symbolic links are present, 
 # GCC’s build script will [build them automatically](https://gcc.gnu.org/install/download.html).
@@ -154,7 +153,6 @@ cd "$BUILD_DIR" || exit 1
 debug "Changing directory to $BUILD_GCC"
 cd "$BUILD_GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
-# Build GCC's C & C++ cross-compilers to /opt/cross/bin
 debug "Build GCC's C & C++ cross-compilers to $CROSS_DIR"
 "$GCC"/configure --prefix="$CROSS_DIR" --target="$TARGET" --enable-languages=c,c++ --disable-multilib
 make -j4 all-gcc
@@ -166,21 +164,18 @@ cd "$BUILD_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_GLIBC"
 cd "$BUILD_GLIBC" || exit 1
-# cd "$BUILD_MUSL"
 # × × × × × × × × × × × × × × × × × × # 
-# Install glibc's standard C library headers to /opt/cross/amd64-linux/include
-debug "Install glibc's standard C library to /opt/cross/${HOST}"
+debug "Install glibc's standard C library to ${CROSS_DIR}/${TARGET}"
 "$GLIBC"/configure --prefix="${CROSS_DIR}/${TARGET}" --build="$MACHTYPE" --host="$HOST" --target="$TARGET" --with-headers="${CROSS_DIR}/${TARGET}/include" --disable-multilib libc_cv_forced_unwind=yes
 make install-bootstrap-headers=yes install-headers
 make -j4 csu/subdir_lib
 install csu/crt1.o csu/crti.o csu/crtn.o "${CROSS_DIR}/${TARGET}/lib"
 "$TARGET"-gcc -nostdlib -nostartfiles -shared -x c /dev/null -o "${CROSS_DIR}/${TARGET}/lib/libc.so"
 touch "${CROSS_DIR}/${TARGET}/include/gnu/stubs.h"
-debug "Install glibc's standard C library to ${CROSS_DIR}/${TARGET}"
+debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_DIR"
 cd "$BUILD_DIR" || exit 1
-# Compiler support library
 # × × × × × × × × × × × × × × × × × × # 
 debug "Changing directory to $BUILD_GCC"
 cd "$BUILD_GCC" || exit 1
