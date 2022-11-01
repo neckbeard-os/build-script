@@ -57,7 +57,7 @@ debug "Install musl-cross-compiler to $OUTPUT"
 make install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
-debug "Return to the starting directory"
+debug "Changing directory to $CURRENT_DIR"
 cd "$CURRENT_DIR" || exit 1
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
