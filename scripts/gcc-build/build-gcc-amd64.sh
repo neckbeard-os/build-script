@@ -25,7 +25,7 @@ BUILD_DIR="/build"
 CROSS_DIR="/opt/cross"
 BUILD_BINUTILS="${BUILD_DIR}/build-binutils"
 BUILD_GCC="${BUILD_DIR}/gcc-build"
-BUILD_GLIBC="$BUILD_DIR/build-glibc"
+BUILD_GLIBC="${BUILD_DIR}/build-glibc"
 # × × × STUFFZ × × #
 BINUTILSv="binutils-2.37"
 GCCv="gcc-10.3.0"
