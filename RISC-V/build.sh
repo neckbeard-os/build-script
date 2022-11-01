@@ -65,9 +65,17 @@ cd "$BUILD_DIR" || exit 1
 # make musl = Musl libc 
 # make linux = GNU glibc
 # × × × × × × × × × × × × × × × × × × #
-debug "Make"
+debug "Make cross compiler"
 "$BUILD_DIR"/configure --prefix="$OUTPUT_DIR"
 make musl
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
+debug "Changing directory to $CURRENT_DIR"
+cd "$CURRENT_DIR" || exit 1
+debug "Done"
+# × × × × × × × × × × × × × × × × × × #
+debug "Removing toolchain repository in $BUILD_DIR"
+sudo rm -R "$BUILD_DIR"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
 debug "Finished"
