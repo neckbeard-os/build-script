@@ -47,6 +47,7 @@ sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/
 debug "Setting target architecture to $TARGET"
 #shellcheck disable=SC2016
 sed -i '31a TARGET = '"$TARGET"'' "$CONF"
+# × × × × × × × × × × × × × × × × × × #
 debug "Setting output directory to $OUTPUT"
 sed -i '32a OUTPUT = '"$OUTPUT"'' "$CONF"
 # × × × × × × × × × × × × × × × × × × #
