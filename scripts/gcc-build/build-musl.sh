@@ -19,6 +19,7 @@ GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
 # sh2eb-linux-muslfdpic
 TARGET="arm-linux-musleabi"
 CONF="./config.mak"
+MAKFILE="./Makefile"
 CURRENT_DIR="$(pwd)"
 OUTPUT="${CURRENT_DIR}/cross"
 CONFIGF="${CURRENT_DIR}/config.mak"
@@ -34,14 +35,14 @@ cd "$BUILD_DIR" || exit 1
 debug "Cloning musl-cross-make"
 git clone "$GIT_REPO_MUSL"
 # × × × × × × × × × × × × × × × × × × #
-debug "Copying $CONFIGF to ${BUILD_DIR}/musl-cross-make"
+debug "Copying $CONFIGF to $MUSL_DIR"
 cp "$CONFIGF" "$MUSL_DIR"
 # × × × × × × × × × × × × × × × × × × #
 debug "Changing directory to $MUSL_DIR"
 cd "$MUSL_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 debug "Changing ISL mirror site to a responsive server"
-sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "./Makefile"
+sed -i 's|ISL_SITE = http://isl.gforge.inria.fr/|ISL_SITE = https://gcc.gnu.org/pub/gcc/infrastructure/|g' "$MAKFILE"
 # × × × × × × × × × × × × × × × × × × #
 debug "Setting target architecture to $TARGET"
 #shellcheck disable=SC2016
@@ -49,11 +50,8 @@ sed -i '31a TARGET = '"$TARGET"'' "$CONF"
 debug "Setting output directory to $OUTPUT"
 sed -i '32a OUTPUT = '"$OUTPUT"'' "$CONF"
 # × × × × × × × × × × × × × × × × × × #
-debug "Make musl-cross-compiler"
+debug "Compile and install to $OUTPUT"
 make
-debug "Done"
-# × × × × × × × × × × × × × × × × × × #
-debug "Install musl-cross-compiler to $OUTPUT"
 make install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
@@ -61,7 +59,7 @@ debug "Changing directory to $CURRENT_DIR"
 cd "$CURRENT_DIR" || exit 1
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
-debug "Removing musl-cross-make repository directory"
+debug "Removing $MUSL_DIR"
 sudo rm -R "$MUSL_DIR"
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
