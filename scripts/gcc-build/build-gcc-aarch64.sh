@@ -193,7 +193,7 @@ cd "$BUILD_GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 # Standard C library
 debug "GCC Standard C library"
-make -j4
+make -j $(nproc)
 make install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
