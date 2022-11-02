@@ -52,7 +52,7 @@ debug "Setting output directory to $OUTPUT"
 sed -i '32a OUTPUT = '"$OUTPUT"'' "$CONF"
 # × × × × × × × × × × × × × × × × × × #
 debug "Compile and install to $OUTPUT"
-make
+make -j $(nproc)
 make install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
