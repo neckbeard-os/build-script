@@ -21,7 +21,7 @@ debug() {
     printf '%s\n' "${PFX} ${*}"
 }
 # × × × VARIABLES × × × #
-CURRENT_DIR="$(pwd)"
+CURRENT_DIR="$PWD"
 BUILD_DIR="${CURRENT_DIR}/riscv-gnu-toolchain"
 OUTPUT_DIR="${CURRENT_DIR}/riscv"
 PATH_BINARY="${CURRENT_DIR}/riscv/bin"
