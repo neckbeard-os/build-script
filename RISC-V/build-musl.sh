@@ -54,11 +54,11 @@ debug "Setting output directory to $OUTPUT_DIR"
 sed -i '32a OUTPUT = '"$OUTPUT_DIR"'' "$CONF"
 # × × × × × × × × × × × × × × × × × × #
 debug "Make musl-cross-compiler"
-make
+make -j $(nproc)
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
 debug "Install musl-cross-compiler to $OUTPUT_DIR"
-make install
+make -j $(nproc) install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
 debug "Returning to starting directory"
