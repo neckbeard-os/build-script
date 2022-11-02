@@ -179,7 +179,7 @@ debug "Changing directory to $BUILD_GCC"
 cd "$BUILD_GCC" || exit 1
 # × × × × × × × × × × × × × × × × × × # 
 debug "Install GCC Standard C library"
-make -j4
+make -j $(nproc)
 make install
 debug "Done"
 # × × × × × × × × × × × × × × × × × × # 
