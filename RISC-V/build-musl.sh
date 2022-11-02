@@ -15,7 +15,7 @@ debug() {
 # × × VARIABLES × × #
 GIT_REPO_MUSL="https://github.com/richfelker/musl-cross-make"
 TARGET="riscv64-linux-musl"
-CURRENT_DIR="$(pwd)"
+CURRENT_DIR="$PWD"
 BUILD_DIR="${CURRENT_DIR}/build"
 OUTPUT_DIR="${CURRENT_DIR}/output"
 CONFIGF="${CURRENT_DIR}/config.mak"
