@@ -67,7 +67,7 @@ cd "$BUILD_DIR" || exit 1
 # × × × × × × × × × × × × × × × × × × #
 debug "Make cross compiler"
 "$BUILD_DIR"/configure --prefix="$OUTPUT_DIR"
-make musl
+make -j $(nproc) musl
 debug "Done"
 # × × × × × × × × × × × × × × × × × × #
 debug "Changing directory to $CURRENT_DIR"
