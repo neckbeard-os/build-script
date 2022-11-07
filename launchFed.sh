@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# @Victor-ray, S. <victorray91@pm.me> 
+# Victor-ray, S. <12261439+ZendaiOwl@users.noreply.github.com>
 # https://github.com/ZendaiOwl
 # 
 # To be launched from a Fedora Host on which the container is being built.
