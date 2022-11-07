@@ -1,4 +1,5 @@
-# @Victor-ray, S. <victorray91@pm.me> 
+# syntax=docker/dockerfile:1
+# Victor-ray, S. <12261439+ZendaiOwl@users.noreply.github.com>
 # https://github.com/ZendaiOwl
 # gcc-aarch64-linux-gnu gcc-arm-linux-gnu libgccjit libgcc gcc
 
